@@ -51,7 +51,7 @@ a:hover {
   position: absolute;
   display: inline-block;
   left: -30px;
-  color:inherit;
+  color: inherit;
   pointer-events: none;
 }
 
