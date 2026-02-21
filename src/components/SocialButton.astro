@@ -28,7 +28,7 @@ const ButtonType = copy ? "button" : "a";
     target={copy ? undefined : "_blank"}
     rel={copy ? undefined : "noopener noreferrer"}
     data-copy-text={copy ? url : undefined}
-    style={`--social-color: ${name.toLowerCase() == "email" ? "var(--text-tertiary)" : color}`}
+    style={`--social-color: ${name == "Email" ? "var(--text-tertiary)" : color}`}
     type={copy ? "button" : undefined}
 >
     <div class="social-icon-bg">
@@ -89,14 +89,14 @@ const ButtonType = copy ? "button" : "a";
         width: 100%; /* fill the grid column */
         min-width: 0; /* allow shrinking inside grid */
         border: 1px solid var(--border-color-subtle);
-        transition: all 0.7s cubic-bezier(0.5, 3, 0, 1);
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
         box-sizing: border-box;
         cursor: pointer;
     }
 
     .social-button:hover {
-        box-shadow: 0rem 0rem 2rem 0.5rem var(--social-color);
-        border: 1px solid var(--social-color);
+        box-shadow: 0rem 0rem 2rem 0.5rem var(--social-color), 0rem 0rem 2rem 0.5rem var(--social-color) inset ;
+        border: 1px solid color-mix(in srgb, var(--social-color), transparent 30%);
         z-index: 0;
     }
 
@@ -152,7 +152,6 @@ const ButtonType = copy ? "button" : "a";
     .social-button.copied {
         border-color: rgba(0, 255, 0, 0.5);
         box-shadow: 0rem 0rem 2rem 0.5rem rgba(0, 255, 0, 0.5);
-        z-index: 0;
     }
 
     .social-button.copied .social-handle {
