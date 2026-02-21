@@ -7,16 +7,19 @@ import { Icon } from 'astro-icon/components';
             <Icon name="lucide:clock" class="clock-icon text" />
             <span class="clock-time text" id="clock-time">00:00:00</span>
         </div>
-        <span class="clock-timezone" id="clock-timezone">PST</span>
+        <span class="clock-timezone" id="clock-timezone">PST <span id="clock-timezone-diff"></span></span>
     </div>
 </div>
 
 <script>
+    const TIME_ZONE = 'America/Los_Angeles';
+
     function updateClock() {
         const now = new Date();
         
-        const time = new Intl.DateTimeFormat('en-US', {
-            timeZone: 'America/Los_Angeles',
+        const time = new Intl.DateTimeFormat('en-US', 
+        {
+            timeZone: TIME_ZONE,
             hour: 'numeric',
             minute: '2-digit',
             second: '2-digit',
@@ -24,8 +27,23 @@ import { Icon } from 'astro-icon/components';
         }).format(now);
         
         const timeElement = document.getElementById('clock-time');
+        const timeZoneElement = document.getElementById('clock-timezone-diff');
         
         if (timeElement) timeElement.textContent = time;
+
+        if (timeZoneElement) 
+        {
+            const myOffset = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE }).match(/GMT([+-]\d+)/)?.[1];
+
+            const myIntOffset = myOffset ? parseInt(myOffset) : -8;
+            const diff = (-now.getTimezoneOffset() / 60) - myIntOffset;
+
+            if (diff != 0) 
+            {
+                const direction = diff > 0 ? 'behind you' : 'ahead of you';
+                timeZoneElement.textContent = "- " + Math.abs(diff) + "h " + direction;
+            }
+        }
     }
     
     updateClock();
