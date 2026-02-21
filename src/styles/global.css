@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import "tailwindcss";
+
+:root {
+    --bg-primary: #000000;
+    --bg-secondary: #101010;
+    --bg-tertiary: #1a1a1a;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-tertiary: #888888;
+    --accent-blue: #0062bd;
+    --accent-blue-dark: #003a70;
+    --border-color: #222222;
+    --border-color-subtle: #111111;
+
+    --box-shadow-blue: 0rem 0rem 1rem 0.5rem var(--accent-blue-dark), 0rem -0.25rem 1rem 0.4rem var(--accent-blue) inset;
+
+    --social-icon-color: #ffffff;
+    --radius-default: 20px;
+    --max-width: 1200px;
+    
+    --font-main: "Nunito", sans-serif;
+    --font-code: "JetBrains Mono", monospace;
+    
+    --header-height: 120px;
+    --footer-height: 40px;
+}
+
+html {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+header {
+    background-color: var(--bg-primary);
+}
+
+main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2em;
+    position: relative;
+    z-index: 1;
+    
+    padding-bottom: calc(2em + var(--footer-height));
+    padding-top: var(--header-height);
+}
+
+@media (max-width: 900px) {
+    main {
+        padding-bottom: calc(1em + var(--footer-height));
+    }
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse 120% 90% at 50% 0%, rgba(0, 98, 189, 0.5) 0%, rgba(0, 98, 189, 0.4) 20%, transparent 40%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+@layer utilities {
+    .text-accent-blue { color: var(--accent-blue); }
+    .text-accent-blue-dark { color: var(--accent-blue-dark); }
+    .text-accent-blue-subtle { color: var(--accent-blue-subtle); }
+
+    .text-primary { color: var(--text-primary); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-tertiary { color: var(--text-tertiary); }
+
+    .bg-accent-blue { background-color: var(--accent-blue); }
+    .bg-accent-blue-dark { background-color: var(--accent-blue-dark); }
+    .bg-accent-blue-subtle { background-color: var(--accent-blue-subtle); }
+
+    .bg-primary { background-color: var(--bg-primary); }
+    .bg-secondary { background-color: var(--bg-secondary); }
+    .bg-project-1 { background-color: var(--bg-project-1); }
+    .bg-project-2 { background-color: var(--bg-project-2); }
+    .bg-tertiary { background-color: var(--bg-tertiary); }
+
+    .border-accent-blue { border-color: var(--accent-blue); }
+    .border-accent-blue-dark { border-color: var(--accent-blue-dark); }
+    .border-accent-blue-subtle { border-color: var(--accent-blue-subtle); }
+}
+
+.subsection {
+    background-color: var(--bg-tertiary);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0rem -0.5rem 1rem 0.5rem rgba(35, 35, 35) inset;
+    border-radius: var(--radius-default);
+    padding: 1em;
+    border: 1px solid var(--border-color-subtle);
+}
+
+.block-no-padding {
+    padding: 0 !important;
+}
+
+.radius-default {
+    border-radius: var(--radius-default);
+}
+
+.box-shadow-blue {
+    box-shadow: var(--box-shadow-blue);
+}

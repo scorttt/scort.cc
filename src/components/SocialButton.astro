@@ -1,0 +1,161 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+    icon: string;
+    name: string;
+    user: string;
+    url?: string;
+    color?: string;
+    copy?: boolean;
+}
+
+const {
+    icon,
+    name,
+    user,
+    url,
+    color = "var(--accent-blue)",
+    copy = false,
+} = Astro.props;
+
+const ButtonType = copy ? "button" : "a";
+---
+
+<ButtonType
+    class={`social-button ${copy ? "copy-button" : ""}`}
+    href={copy ? undefined : url}
+    target={copy ? undefined : "_blank"}
+    rel={copy ? undefined : "noopener noreferrer"}
+    data-copy-text={copy ? url : undefined}
+    style={`--social-color: ${name.toLowerCase() == "email" ? "var(--text-tertiary)" : color}`}
+    type={copy ? "button" : undefined}
+>
+    <div class="social-icon-bg">
+        <Icon name={icon} class="social-icon" />
+    </div>
+    <div class="social-info">
+        <span class="social-name">
+            {name}
+            <Icon
+                name={copy ? "lucide:copy" : "lucide:square-arrow-out-up-right"}
+                class="external-icon"
+            />
+        </span>
+        <span class="social-handle">{user}</span>
+    </div>
+</ButtonType>
+
+<script>
+    document.addEventListener("astro:page-load", () => 
+    {
+        document.querySelectorAll(".copy-button").forEach((button) => 
+        {
+            button.addEventListener("click", () => 
+            {
+                const text = button.getAttribute("data-copy-text");
+                const handle = button.querySelector(".social-handle");
+                
+                if (!text || !handle) 
+                    return;
+
+                navigator.clipboard.writeText(text).then(() => 
+                {
+                    const original = handle.textContent;
+                    handle.textContent = "copied!";
+                    button.classList.add("copied");
+                    setTimeout(() => 
+                    {
+                        handle.textContent = original;
+                        button.classList.remove("copied");
+                    }, 1000);
+                });
+                
+            });
+        });
+    });
+</script>
+
+<style>
+    .social-button {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+        border-radius: var(--radius-default);
+        background-color: var(--bg-tertiary);
+        box-shadow: 0 0 0px rgba(0, 0, 0, 0), 0rem -0.5rem 1rem 0.5rem rgba(40, 40, 40) inset; /* idk why i need the first box-shadow for the transition to work css is annoying and stupid */
+        text-decoration: none;
+        width: 100%; /* fill the grid column */
+        min-width: 0; /* allow shrinking inside grid */
+        border: 1px solid var(--border-color-subtle);
+        transition: all 0.7s cubic-bezier(0.5, 3, 0, 1);
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+
+    .social-button:hover {
+        box-shadow: 0rem 0rem 2rem 0.5rem var(--social-color);
+        border: 1px solid var(--social-color);
+        z-index: 0;
+    }
+
+    .social-icon-bg {
+        height: 3.5rem;
+        border-radius: var(--radius-default);
+        background-color: color-mix(in srgb, var(--social-color), transparent 70%);
+        box-shadow: 0rem -0.5rem 1rem 0.5rem var(--social-color) inset;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.7s cubic-bezier(0.5, 3, 0, 1);
+    }
+
+    .social-button:hover .social-icon-bg {
+        background-color: var(--social-color);
+        box-shadow: none;
+    }
+
+    .social-icon {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .social-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .social-name {
+        font-weight: bold;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .external-icon {
+        width: 14px;
+        height: 14px;
+        color: var(--text-secondary);
+        opacity: 0.7;
+    }
+
+    .social-handle {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        transition: all 1s cubic-bezier(0.5, 3, 0, 1);
+    }
+
+    .social-button.copied {
+        border-color: rgba(0, 255, 0, 0.5);
+        box-shadow: 0rem 0rem 2rem 0.5rem rgba(0, 255, 0, 0.5);
+        z-index: 0;
+    }
+
+    .social-button.copied .social-handle {
+        color: rgba(0, 255, 0, 0.5);
+    }
+</style>

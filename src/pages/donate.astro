@@ -1,0 +1,46 @@
+---
+import Base from "../layouts/Base.astro"
+import Intro from "../components/Intro.astro"
+import SocialButton from '../components/SocialButton.astro';
+
+const kofi = "https://ko-fi.com/scort";
+const btc = "bc1q2vwaw3s52ucckwhjl69e5y3c4vtt3322hn4cjt";
+const xmr = "44eRe1wCmLF6gQBWcjJYxLR2Dwd5TGztHSe3R7huCuP3FeuiaNTHSYheCyabYo1RMJTMpCbMNsJQjNk9CRH6yuPHQmzus2t";
+
+---
+<Base title="scort / donate">
+    
+    <Intro page="/ donate" title="donate">
+        give me money (if you want)
+    </Intro>
+    
+    <div class="grid gap-2 md:grid-cols-3">
+        <SocialButton 
+            icon="simple-icons:kofi" 
+            name="Kofi" 
+            user="scort"
+            url={kofi}
+            color="#ff5915"
+        />
+
+        <SocialButton 
+            icon="simple-icons:bitcoin" 
+            name="BTC" 
+            user="click to copy address"
+            url={btc}
+            color="#f7931a"
+            copy={true}
+        />
+        
+        <SocialButton 
+            icon="simple-icons:monero" 
+            name="XMR" 
+            user="click to copy address"
+            url={xmr}
+            color="#ff6600"
+            copy={true}
+        />
+    </div>
+        
+
+</Base>

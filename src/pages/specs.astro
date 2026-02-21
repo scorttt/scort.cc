@@ -1,0 +1,68 @@
+---
+const specs = {
+    mainpc: [
+        { icon: 'simple-icons:windows', label: 'OS', value: 'Windows 11' },
+        { icon: 'lucide:cpu', label: 'CPU', value: 'Ryzen 7 9800X3D' },
+        { icon: 'lucide:gpu', label: 'GPU', value: 'MSI Ventus RTX 5070 Ti' },
+        { icon: 'lucide:memory-stick', label: 'RAM', value: '32GB DDR5-6400 CL32' },
+        { icon: 'lucide:circuit-board', label: 'Mobo', value: 'ASUS PRIME B650M-A AX II' },
+        { icon: 'lucide:hard-drive', label: 'Disk', value: '3TB Total' },
+    ],
+    server: [
+        { icon: 'simple-icons:truenas', label: 'OS', value: 'TrueNAS Scale' },
+        { icon: 'lucide:cpu', label: 'CPU', value: 'i5 12400' },
+        { icon: 'lucide:memory-stick', label: 'RAM', value: '32GB DDR4-3200 CL22' },
+        { icon: 'lucide:ethernet-port', label: 'NIC', value: 'Broadcom 57810S 10GbE'},
+        { icon: 'lucide:circuit-board', label: 'Mobo', value: 'ASRock Z690M-ITX/ax' },
+        { icon: 'lucide:database', label: 'Array', value: '5x 12TB, RAIDZ2 - 36TB Total' },
+    ],
+    laptop: [
+        { icon: 'simple-icons:archlinux', label: 'OS', value: 'Arch Linux' },
+        { icon: 'lucide:mouse-pointer', label: 'DE', value: 'KDE Plasma / Niri' },
+        { icon: 'lucide:laptop', label: 'Model', value: 'Thinkpad T480s' },
+        { icon: 'lucide:cpu', label: 'CPU', value: 'i5 8250U' },
+        { icon: 'lucide:memory-stick', label: 'RAM', value: '24GB' },
+        { icon: 'lucide:hard-drive', label: 'Disk', value: '1TB' },
+    ],
+    peripherals: [
+        { icon: 'lucide:mouse', label: 'Mouse', value: 'Lamzu Atlantis Mini' },
+        { icon: 'lucide:square', label: 'Mousepad', value: 'Artisan Raiden XL Mid' },
+        { icon: 'lucide:keyboard', label: 'Keyboard', value: 'Rainy 75' },
+        { icon: 'lucide:headphones', label: 'Headphones', value: 'beyerdynamic DT 770 Pro' },
+        { icon: 'lucide:mic', label: 'Microphone', value: 'Antlion ModMic Uni' },
+        { icon: 'lucide:boom-box', label: 'AMP / DAC', value: 'Fiio K3' },
+    ]
+};
+
+import Base from "../layouts/Base.astro"
+import Intro from "../components/Intro.astro"
+import Block from "../components/Block.astro"
+import SpecsList from "../components/SpecsList.astro"
+
+---
+<Base title="scort / specs">
+    
+    <Intro page="/ specs" title="specs">
+        i like computer :)
+    </Intro>
+
+    <div class="grid gap-4 md:grid-cols-2 not-md:grid-cols-1">
+        <Block title="main" gradient="blue">
+            <SpecsList items={specs.mainpc} />
+        </Block>
+
+        <Block title="server / NAS" gradient="blue">
+            <SpecsList items={specs.server} />
+        </Block>
+
+        <Block title="laptop">
+            <SpecsList items={specs.laptop} />
+        </Block>
+
+        <Block title="peripherals">
+            <SpecsList items={specs.peripherals} />
+        </Block>
+
+
+    </div>
+</Base>

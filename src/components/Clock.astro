@@ -1,0 +1,89 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+<div class="clock-container">
+    <div class="clock-display">
+        <div class="clock-time-row">
+            <Icon name="lucide:clock" class="clock-icon text" />
+            <span class="clock-time text" id="clock-time">00:00:00</span>
+        </div>
+        <span class="clock-timezone" id="clock-timezone">PST</span>
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        
+        const time = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/Los_Angeles',
+            hour: 'numeric',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        }).format(now);
+        
+        const timeElement = document.getElementById('clock-time');
+        
+        if (timeElement) timeElement.textContent = time;
+    }
+    
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>
+
+<style>
+    .clock-container {
+
+        flex-direction: column;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+    
+    .clock-display {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .clock-time-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .clock-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        flex-shrink: 0;
+        filter: drop-shadow(0 0 10px rgba(0, 98, 189));
+    }
+    
+    .clock-time {
+        font-size: 1.125rem;
+        font-weight: bold;
+        font-family: var(--font-code);
+        letter-spacing: 0.05em;
+        text-shadow: 0 0 10px rgba(0, 98, 189);
+    }
+    
+    .clock-timezone {
+        font-size: 0.875rem;
+        opacity: 0.7;
+    }
+    
+    @media (min-width: theme('screens.md')) {
+        .clock-icon {
+            width: 2rem;
+            height: 2rem;
+        }
+        
+        .clock-time {
+            font-size: 2rem;
+        }
+        
+        .clock-timezone {
+            font-size: 1rem;
+        }
+    }
+</style>

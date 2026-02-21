@@ -1,0 +1,41 @@
+---
+import Base from "../layouts/Base.astro";
+import Intro from "../components/Intro.astro";
+import Block from "../components/Block.astro";
+
+---
+<Base title="scort / credit">
+
+    <Intro page="/ credit">
+    </Intro>
+
+    <Block title="credit" gradient="blue">
+        <ul class="list-disc">
+            <span class="text-xl font-bold">built with <a href="https://astro.build/" target="_blank">Astro</a></span>
+            <li><a href="https://buh.moe/" target="_blank">buh.moe / amemoia</a> for heavy inpiration and some styling</li>
+            <li><a href="https://lanyard.eggsy.xyz/" target="_blank">Lanyard</a> for Discord status</li>
+        </ul>
+
+        <ul class="list-disc">
+            <span class="text-xl font-bold">font</span>
+            <li><a href="https://fonts.google.com/specimen/Nunito" target="_blank">Nunito</a></li>
+            <li><a href="https://fonts.google.com/specimen/JetBrains+Mono" target="_blank">JetBrains Mono</a></li>
+        </ul>
+        <ul class="list-disc">
+            <span class="text-xl font-bold">icons</span>
+              <li><a href="https://lucide.dev/icons/" target="_blank">lucide</a></li>
+              <li><a href="https://simpleicons.org/" target="_blank">simple-icons</a></li>
+        </ul>
+    
+    </Block>
+</Base>
+
+<style>
+    li {
+        margin-left: 2em;
+    }
+
+    a {
+        color: var(--accent-blue);
+    }
+</style>

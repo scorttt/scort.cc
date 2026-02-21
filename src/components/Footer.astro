@@ -1,0 +1,86 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+<footer class="footer-container">
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="https://github.com/scorttt/scort.cc" target="_blank">
+                <Icon name="lucide:github" />
+                <span>source</span>
+            </a>
+            
+            <a href="/credit">
+                <Icon name="lucide:text-align-justify" />
+                <span>credit</span>
+            </a>
+            
+            <div class="footer-right">
+                <a href="/v1/index.html" target="_blank">
+                    <Icon name="lucide:globe" />
+                    <span>v1 site</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer-container {
+        background-color: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(10px);
+        position: fixed;
+        left: -1rem;
+        right: -1rem;
+        bottom: 0;
+        height: var(--footer-height);
+        z-index: 50;
+    }
+
+    .footer-content {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 1em 5em;
+        height: 100%;
+        align-items: center;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 1em;
+        align-items: center;
+    }
+
+    .footer-links a {
+        color: var(--text-primary);
+        font-weight: bold;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        padding: 0.5em 1em;
+        transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+        color: var(--accent-blue);
+    }
+
+    .footer-links a svg {
+        width: 1em;
+        height: 1em;
+        flex-shrink: 0;
+    }
+
+    .footer-info {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .footer-text {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+</style>

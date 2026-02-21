@@ -1,0 +1,198 @@
+---
+import { Icon } from 'astro-icon/components';
+const currentPath = Astro.url.pathname;
+---
+<header class="header-container">
+    <div class="header-top">
+        <a class="header-icon" href="/">
+            <!-- <img src="/favicon-32x32.png" alt="favicon" class="favicon" /> -->
+            <span class="brand-text">scort.cc</span>
+        </a>
+    </div>
+    
+    <div class="header-bottom">
+        <nav class="header-nav">
+            <div class="nav-left">
+                <a href="/" class:list={[{ active: currentPath === '/' }]}>
+                    <Icon name="lucide:home" />
+                    <span>home</span>
+                </a>
+                <a href="/work" class:list={[{ active: currentPath.startsWith('/work') }]}>
+                    <Icon name="lucide:pen-line" />
+                    <span>work</span>
+                </a>
+                <a href="/specs" class:list={[{ active: currentPath.startsWith('/specs') }]}>
+                    <Icon name="lucide:pc-case" />
+                    <span>specs</span>
+                </a>
+            </div>
+
+            <div class="nav-right">
+                <a href="/donate" class:list={[{ active: currentPath.startsWith('/donate') }]}>
+                    <Icon name="lucide:heart" />
+                    <span>donate</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<style>
+    .header-container {
+        background-color: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(10px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+    }
+    
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em 4em 0em 4em;
+    }
+
+    @media (max-width: 768px) {
+        .header-top {
+            padding: 0.75em 1em 0.5em 1em;
+        }
+    }
+
+    .favicon {
+        width: 1.5em;
+        height: 1.5em;
+    }
+
+    .brand-text {
+        font-weight: bold;
+        font-family: var(--font-main);
+    }
+
+    .header-bottom {
+        padding: 0 4em;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE */
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .header-bottom::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    @media (max-width: 768px) {
+        .header-bottom {
+            padding: 0 1em;
+        }
+    }
+
+    .header-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        min-width: max-content;
+        position: relative;
+        z-index: 1;
+    }
+
+    @media (max-width: 768px) {
+        .header-nav {
+            justify-content: flex-start;
+            min-width: fit-content;
+        }
+    }
+
+    .nav-left,
+    .nav-right {
+        display: flex;
+        gap: 2em;
+        align-items: stretch;
+    }
+
+    @media (max-width: 768px) {
+        .nav-left,
+        .nav-right {
+            gap: 1.5em;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .nav-left,
+        .nav-right {
+            gap: 1em;
+        }
+    }
+
+    .nav-left {
+        margin-right: 2em;
+    }
+
+    @media (max-width: 768px) {
+        .nav-left {
+            margin-right: 1.5em;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .nav-left {
+            margin-right: 1em;
+        }
+    }
+
+    .header-nav a {
+        color: var(--text-primary);
+        font-weight: 500;
+        text-decoration: none;
+        position: relative;
+        white-space: nowrap;
+        padding: 0.5em 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    @media (max-width: 768px) {
+        .header-nav a {
+            padding: 0.75em 0.5em;
+            font-size: 0.95em;
+        }
+    }
+    
+    .header-nav a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: transparent;
+        z-index: 2;
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+    }
+
+    .header-nav a:hover:not(.active)::after {
+        box-shadow: 0rem 0.5rem 1rem 0.5rem var(--text-tertiary);
+    }
+
+    .header-nav a.active {
+        color: var(--accent-blue);
+    }
+    
+    .header-nav a.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--accent-blue);
+        box-shadow: 0 0.5rem 1rem 0.5rem var(--accent-blue);
+        z-index: 2;
+    }
+    
+    .spacer {
+        height: 200px;
+    }
+</style>
