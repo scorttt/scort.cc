@@ -4,6 +4,7 @@ import Intro from "../components/Intro.astro"
 import SocialButton from '../components/SocialButton.astro';
 
 const kofi = "https://ko-fi.com/scort";
+const streamelements = "https://streamelements.com/scort_/tip"
 const btc = "bc1q2vwaw3s52ucckwhjl69e5y3c4vtt3322hn4cjt";
 const xmr = "44eRe1wCmLF6gQBWcjJYxLR2Dwd5TGztHSe3R7huCuP3FeuiaNTHSYheCyabYo1RMJTMpCbMNsJQjNk9CRH6yuPHQmzus2t";
 
@@ -14,7 +15,7 @@ const xmr = "44eRe1wCmLF6gQBWcjJYxLR2Dwd5TGztHSe3R7huCuP3FeuiaNTHSYheCyabYo1RMJT
         give me money (if you want)
     </Intro>
     
-    <div class="grid gap-2 md:grid-cols-3">
+    <div class="grid gap-2 md:grid-cols-4">
         <SocialButton 
             icon="simple-icons:kofi" 
             name="Kofi" 
@@ -22,7 +23,13 @@ const xmr = "44eRe1wCmLF6gQBWcjJYxLR2Dwd5TGztHSe3R7huCuP3FeuiaNTHSYheCyabYo1RMJT
             url={kofi}
             color="#ff5915"
         />
-
+        <SocialButton 
+            icon="lucide:rocket" 
+            name="StreamElements" 
+            user="scort_"
+            url={streamelements}
+            color="#2700ff"
+        />
         <SocialButton 
             icon="simple-icons:bitcoin" 
             name="BTC" 
