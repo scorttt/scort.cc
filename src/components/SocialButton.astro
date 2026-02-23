@@ -89,7 +89,7 @@ const ButtonType = copy ? "button" : "a";
         width: 100%; /* fill the grid column */
         min-width: 0; /* allow shrinking inside grid */
         border: 1px solid var(--border-color-subtle);
-        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+        transition: all 0.7s cubic-bezier(0.5, 1, 0, 1);
         box-sizing: border-box;
         cursor: pointer;
     }
@@ -97,6 +97,7 @@ const ButtonType = copy ? "button" : "a";
     .social-button:hover {
         box-shadow: 0rem 0rem 2rem 0.5rem var(--social-color), 0rem 0rem 2rem 0.5rem var(--social-color) inset;
         border: 1px solid color-mix(in srgb, var(--social-color), transparent 30%);
+        transition: all 0.7s cubic-bezier(0.5, 3, 0, 1);
     }
 
     .social-icon-bg {
