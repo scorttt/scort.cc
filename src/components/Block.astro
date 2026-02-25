@@ -1,14 +1,22 @@
 ---
 import { Icon } from "astro-icon/components";
 
-const { title, gradient, links = [], class: className } = Astro.props;
+const { title, headerColor, collapsible = false, links = [], class: className } = Astro.props;
 
 ---
 
 <div class="flex flex-col block-wrapper">
-    <div class="block-header" data-gradient={gradient}>
+    <div class="block-header" data-headerColor={headerColor} data-collapsible={collapsible}>
         <div class="flex items-start justify-between w-full z-10">
             <div class="font-bold text-2xl flex items-center gap-1">
+                {
+                    collapsible == true && 
+                    (
+                        <button class="collapse-btn" aria-label="Toggle">
+                            <Icon name="lucide:chevron-down" class="collapse-icon" />
+                        </button>
+                    )
+                }
                 <span>{title}</span>
             </div>
 
@@ -36,10 +44,31 @@ const { title, gradient, links = [], class: className } = Astro.props;
         <slot />
     </div>
 </div>
+
+<script>
+    document.addEventListener("astro:page-load", () => 
+    {
+        document.querySelectorAll(".collapse-btn").forEach((button) => 
+        {
+            button.addEventListener("click", () => 
+            {
+                const wrapper = button.closest(".block-wrapper");
+                const content = wrapper?.querySelector(".block-content");
+                const icon = button.querySelector(".collapse-icon");
+                
+                if (!content || !icon) 
+                    return;
+                
+                const collapsed = content.classList.toggle("collapsed");
+                (icon as HTMLElement).style.transform = collapsed ? "rotate(-90deg)" : "rotate(0deg)";
+            });
+        });
+    });
+</script>
+
 <style>
     .block-wrapper {
         border-radius: var(--radius-default);
-        height: 100%;
         box-shadow: 0rem 0rem 1rem rgba(0, 0, 0, 0.75);
     }
     .block-header {
@@ -87,13 +116,15 @@ const { title, gradient, links = [], class: className } = Astro.props;
         opacity: 1;
     }
     
-    .block-header[data-gradient="blue"] {
+    .block-header[data-headerColor="blue"] {
         background-color: rgba(0, 98, 189, 0.5);
         box-shadow: var(--box-shadow-blue);
         border-top-left-radius: var(--radius-default);
         border-top-right-radius: var(--radius-default);
         border: 1px solid var(--box-shadow-blue);
         border-bottom: none;
+        transition: all 0.5s cubic-bezier(0.5, 3, 0, 1);
+        z-index: 1;
     }
     .block-content {
         padding: 1em;
@@ -104,15 +135,37 @@ const { title, gradient, links = [], class: className } = Astro.props;
         border: 1px solid var(--border-color);
         border-top: none;
         flex: 1;
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+        overflow: hidden;
+        max-height: 2000px;
     }
-    .block-wrapper {
-        border-radius: var(--radius-default);
-    }
-    .block-content {
-        border-bottom-left-radius: var(--radius-default);
-        border-bottom-right-radius: var(--radius-default);
-    }
+    
     .p-0 {
         padding: 0;
     }
+    
+    .collapse-btn {
+        padding-right: 0.3rem;
+    }
+
+    .collapse-icon {
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+    }
+    
+    .collapse-icon:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.5);
+        border-radius: 99px;
+    }
+
+    .block-content.collapsed {
+        max-height: 0;
+        opacity: 0;
+        padding: 0;
+    }
+    
+    .block-wrapper:has(.collapsed) .block-header[data-headerColor="blue"] {
+        border-radius: var(--radius-default);
+    }
+
 </style>
