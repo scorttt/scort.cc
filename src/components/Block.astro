@@ -123,9 +123,13 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         border-top-right-radius: var(--radius-default);
         border: 1px solid var(--box-shadow-blue);
         border-bottom: none;
+    }
+    
+    .block-header[data-collapsible="true"] {
         transition: all 0.5s cubic-bezier(0.5, 3, 0, 1);
         z-index: 1;
     }
+    
     .block-content {
         padding: 1em;
         background-color: var(--bg-secondary);
@@ -164,7 +168,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         padding: 0;
     }
     
-    .block-wrapper:has(.collapsed) .block-header[data-headerColor="blue"] {
+    .block-wrapper:has(.collapsed) .block-header[data-collapsible="true"] {
         border-radius: var(--radius-default);
     }
 
