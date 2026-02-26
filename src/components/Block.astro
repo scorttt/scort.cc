@@ -108,10 +108,11 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         flex: 1;
         transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
         overflow: hidden;
-        max-height: 2000px;
+        max-height: 5000px;
     }
     
     .block-content.collapsed {
+        border-radius: calc(var(--radius-default) * 2.5);
         max-height: 0;
         opacity: 0;
         padding-bottom: 0;
