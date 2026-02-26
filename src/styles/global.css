@@ -96,8 +96,6 @@ body::before {
 
     .bg-primary { background-color: var(--bg-primary); }
     .bg-secondary { background-color: var(--bg-secondary); }
-    .bg-project-1 { background-color: var(--bg-project-1); }
-    .bg-project-2 { background-color: var(--bg-project-2); }
     .bg-tertiary { background-color: var(--bg-tertiary); }
 
     .border-accent-blue { border-color: var(--accent-blue); }
