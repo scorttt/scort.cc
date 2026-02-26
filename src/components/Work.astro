@@ -6,7 +6,7 @@ const { title, date, description, link, links = [] } = Astro.props;
 
 <Block title={title} link={link} links={links} class="p-0">
     <div class="flex flex-row w-full">
-        <div class="flex flex-row items-center gap-1 text-accent-blue font-bold bg-primary px-4 py-2 flex-1"  >
+        <div class="flex flex-row items-center gap-1 text-tertiary font-bold px-4 py-2 flex-1"  >
             <Icon name="lucide:calendar" class="project-icon" />
             <span>{date}</span>
         </div>
