@@ -70,10 +70,12 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
     .block-wrapper {
         border-radius: var(--radius-default);
     }
+
     .block-header {
         width: 100%;
         padding: 1em;
-        background-color: var(--bg-secondary);
+        background-color: color-mix(in srgb, var(--bg-secondary), transparent 25%);
+        backdrop-filter: blur(10px);
         box-shadow: 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30) inset;
         position: relative;
         border-top-left-radius: var(--radius-default);
@@ -96,7 +98,8 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
     
     .block-content {
         padding: 1em;
-        background-color: var(--bg-secondary);
+        background-color: color-mix(in srgb, var(--bg-secondary), transparent 25%);
+        backdrop-filter: blur(10px);
         box-shadow: 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30) inset;
         border-bottom-left-radius: var(--radius-default);
         border-bottom-right-radius: var(--radius-default);
