@@ -105,7 +105,7 @@ body::before {
 
 .subsection {
     background-color: color-mix(in srgb, var(--bg-tertiary), transparent 50%);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.75), 0rem -0.5rem 1rem 0.5rem rgba(40, 40, 40, 0.75) inset;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.75), 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30, 0.75) inset;
     border-radius: var(--radius-default);
     padding: 1em;
     border: 1px solid var(--border-color-subtle);
