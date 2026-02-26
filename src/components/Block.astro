@@ -119,6 +119,11 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         border-radius: var(--radius-default);
     }
     
+    .block-wrapper:has(a:hover) {
+        z-index: 10;
+        position: relative;
+    }
+    
     .collapse-btn {
         padding-right: 0.3rem;
     }
@@ -157,14 +162,13 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         transform: translateX(-50%);
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
-        box-shadow: 0 0.5rem 10px rgba(0, 0, 0, 0.75);
+        box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.75);
         padding: 0.25rem 0.5rem;
         border-radius: var(--radius-default);
         font-size: 0.75rem;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s;
-        z-index: 1;
     }
     
     .link-icons a:hover::after{
