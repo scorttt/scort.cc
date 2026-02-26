@@ -157,13 +157,14 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         transform: translateX(-50%);
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
-        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0.5rem 10px rgba(0, 0, 0, 0.75);
         padding: 0.25rem 0.5rem;
         border-radius: var(--radius-default);
         font-size: 0.75rem;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s;
+        z-index: 1;
     }
     
     .link-icons a:hover::after{
