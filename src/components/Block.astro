@@ -69,7 +69,6 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
 <style>
     .block-wrapper {
         border-radius: var(--radius-default);
-        box-shadow: 0rem 0rem 1rem rgba(0, 0, 0, 0.75);
     }
     .block-header {
         width: 100%;
@@ -81,6 +80,61 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         border-top-right-radius: var(--radius-default);
         border: 1px solid var(--border-color);
         border-bottom: none;
+        z-index: 1;
+    }
+    
+    .block-header[data-headerColor="blue"] {
+        background-color: rgba(0, 98, 189, 0.5);
+        box-shadow: var(--box-shadow-blue);
+        border: 1px solid var(--box-shadow-blue);
+        border-bottom: none;
+    }
+    
+    .block-header[data-collapsible="true"] {
+        transition: all 0.5s cubic-bezier(0.5, 3, 0, 1);
+    }
+    
+    .block-content {
+        padding: 1em;
+        background-color: var(--bg-secondary);
+        box-shadow: 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30) inset;
+        border-bottom-left-radius: var(--radius-default);
+        border-bottom-right-radius: var(--radius-default);
+        border: 1px solid var(--border-color);
+        border-top: none;
+        flex: 1;
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+        overflow: hidden;
+        max-height: 2000px;
+    }
+    
+    .block-content.collapsed {
+        max-height: 0;
+        opacity: 0;
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+    
+    .block-wrapper:has(.collapsed) .block-header[data-collapsible="true"] {
+        border-radius: var(--radius-default);
+    }
+    
+    .collapse-btn {
+        padding-right: 0.3rem;
+    }
+
+    .collapse-icon {
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+    }
+    
+    .collapse-icon:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.5);
+        border-radius: 99px;
+    }
+    
+    .p-0 {
+        padding: 0;
     }
 
     .link-icons a {
@@ -114,61 +168,6 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
     
     .link-icons a:hover::after{
         opacity: 1;
-    }
-    
-    .block-header[data-headerColor="blue"] {
-        background-color: rgba(0, 98, 189, 0.5);
-        box-shadow: var(--box-shadow-blue);
-        border-top-left-radius: var(--radius-default);
-        border-top-right-radius: var(--radius-default);
-        border: 1px solid var(--box-shadow-blue);
-        border-bottom: none;
-    }
-    
-    .block-header[data-collapsible="true"] {
-        transition: all 0.5s cubic-bezier(0.5, 3, 0, 1);
-    }
-    
-    .block-content {
-        padding: 1em;
-        background-color: var(--bg-secondary);
-        box-shadow: 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30) inset;
-        border-bottom-left-radius: var(--radius-default);
-        border-bottom-right-radius: var(--radius-default);
-        border: 1px solid var(--border-color);
-        border-top: none;
-        flex: 1;
-        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
-        overflow: hidden;
-        max-height: 2000px;
-    }
-    
-    .p-0 {
-        padding: 0;
-    }
-    
-    .collapse-btn {
-        padding-right: 0.3rem;
-    }
-
-    .collapse-icon {
-        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
-    }
-    
-    .collapse-icon:hover {
-        background-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.5);
-        border-radius: 99px;
-    }
-
-    .block-content.collapsed {
-        max-height: 0;
-        opacity: 0;
-        padding: 0;
-    }
-    
-    .block-wrapper:has(.collapsed) .block-header[data-collapsible="true"] {
-        border-radius: var(--radius-default);
     }
 
 </style>
