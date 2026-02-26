@@ -102,7 +102,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         border-top: none;
         flex: 1;
         transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
-        overflow: hidden;
+        overflow: visible;
         scrollbar-width: none;
         max-height: 5000px;
     }
@@ -113,6 +113,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         opacity: 0;
         padding-bottom: 0;
         padding-top: 0;
+        overflow: hidden;
     }
     
     .block-wrapper {
@@ -174,6 +175,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s;
+        text-wrap: nowrap;
     }
     
     .link-icons a:hover::after{
