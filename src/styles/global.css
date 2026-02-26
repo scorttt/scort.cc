@@ -71,7 +71,7 @@ main {
 
 body::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0px;
     left: 0;
     right: 0;
