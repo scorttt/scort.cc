@@ -66,7 +66,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
     });
 </script>
 
-<style>
+<style> 
     .block-header {
         padding: 1em;
         background-color: color-mix(in srgb, var(--bg-secondary), transparent 25%);
@@ -115,13 +115,18 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         padding-top: 0;
     }
     
+    .block-wrapper {
+        z-index: 1;
+        transition: z-index 0s 0.3s;
+    }
+    
     .block-wrapper:has(.collapsed) .block-header[data-collapsible="true"] {
         border-radius: var(--radius-default);
     }
     
     .block-wrapper:has(a:hover) {
-        z-index: 10;
-        position: relative;
+        z-index: 2;
+        transition: z-index 0s;
     }
     
     .collapse-btn {
