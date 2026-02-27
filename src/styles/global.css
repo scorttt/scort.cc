@@ -4,8 +4,8 @@
 
 :root {
     --bg-primary: #000000;
-    --bg-secondary: #101010;
-    --bg-tertiary: #1a1a1a;
+    --bg-secondary: #161616;
+    --bg-tertiary: #1e1e1e;
     --text-primary: #ffffff;
     --text-secondary: #cccccc;
     --text-tertiary: #888888;
@@ -14,10 +14,11 @@
     --border-color: #222222;
     --border-color-subtle: #111111;
 
-    --box-shadow-blue: 0rem 0rem 1rem 0.5rem var(--accent-blue-dark), 0rem -0.25rem 1rem 0.4rem var(--accent-blue) inset;
+    --box-shadow-blue: 0rem 0rem 1rem 0.25rem var(--accent-blue-dark), 0rem -0.25rem 1rem 0.25rem var(--accent-blue) inset;
+    --box-shadow-tertiary: 0rem -0.5rem 1rem 0.5rem color-mix(in srgb, var(--bg-tertiary), transparent 25%) inset;
 
     --social-icon-color: #ffffff;
-    --radius-default: 12px;
+    --radius-default: 16px;
     --max-width: 1200px;
     
     --font-main: "Nunito", sans-serif;
@@ -105,7 +106,7 @@ body::before {
 
 .subsection {
     background-color: color-mix(in srgb, var(--bg-tertiary), transparent 50%);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.75), 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30, 0.75) inset;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.75), var(--box-shadow-tertiary);
     border-radius: var(--radius-default);
     padding: 1em;
     border: 1px solid var(--border-color-subtle);
