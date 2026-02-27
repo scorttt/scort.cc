@@ -17,7 +17,7 @@
     --box-shadow-blue: 0rem 0rem 1rem 0.5rem var(--accent-blue-dark), 0rem -0.25rem 1rem 0.4rem var(--accent-blue) inset;
 
     --social-icon-color: #ffffff;
-    --radius-default: 20px;
+    --radius-default: 12px;
     --max-width: 1200px;
     
     --font-main: "Nunito", sans-serif;

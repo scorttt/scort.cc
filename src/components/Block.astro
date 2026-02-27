@@ -69,12 +69,14 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
 <style> 
     .block-header {
         padding: 1em;
+        margin-bottom: 0.25em;
         background-color: color-mix(in srgb, var(--bg-tertiary), transparent 50%);
         backdrop-filter: blur(10px);
         box-shadow: 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30, 0.75) inset;
         position: relative;
-        border-top-left-radius: var(--radius-default);
-        border-top-right-radius: var(--radius-default);
+        /*border-top-left-radius: var(--radius-default);
+        border-top-right-radius: var(--radius-default);*/
+        border-radius: var(--radius-default);
         border: 1px solid var(--border-color);
         border-bottom: none;
         z-index: 1;
@@ -87,17 +89,18 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         border-bottom: none;
     }
     
-    .block-header[data-collapsible="true"] {
+    /*.block-header[data-collapsible="true"] {
         transition: all 0.5s cubic-bezier(0.5, 3, 0, 1);
-    }
+    }*/
     
     .block-content {
         padding: 1em;
         background-color: color-mix(in srgb, var(--bg-secondary), transparent 50%);
         backdrop-filter: blur(10px);
         box-shadow: 0rem -0.5rem 1rem 0.5rem rgba(30, 30, 30, 0.75) inset;
-        border-bottom-left-radius: var(--radius-default);
-        border-bottom-right-radius: var(--radius-default);
+        /*border-bottom-left-radius: var(--radius-default);
+        border-bottom-right-radius: var(--radius-default);*/
+        border-radius: var(--radius-default);
         border: 1px solid var(--border-color);
         border-top: none;
         flex: 1;
@@ -108,7 +111,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
     }
     
     .block-content.collapsed {
-        border-radius: calc(var(--radius-default) * 2.5);
+        /*border-radius: calc(var(--radius-default) * 2.5);*/
         max-height: 0;
         opacity: 0;
         padding-bottom: 0;
@@ -121,9 +124,9 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
         transition: z-index 0s 0.3s;
     }
     
-    .block-wrapper:has(.collapsed) .block-header[data-collapsible="true"] {
+    /*.block-wrapper:has(.collapsed) .block-header[data-collapsible="true"] {
         border-radius: var(--radius-default);
-    }
+    }*/
     
     .block-wrapper:has(a:hover) {
         z-index: 2;
