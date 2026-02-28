@@ -5,13 +5,13 @@ const { title, date, description, link, links = [] } = Astro.props;
 ---
 
 <Block title={title} link={link} links={links} class="p-0">
-    <div class="flex flex-row w-full">
-        <div class="flex flex-row items-center gap-1 text-tertiary font-bold px-4 py-2"  >
+    <div class="flex flex-row justify-between">
+        <div class="flex flex-row items-center gap-1 text-tertiary font-bold px-4 py-2">
             <Icon name="lucide:calendar" class="project-icon" />
             <span>{date}</span>
         </div>
     </div>
-    <span class="px-4 pb-4">{description}</span>
+    <span class="flex flex-1 items-center px-4 pb-4">{description}</span>
 </Block>
 <style>
     .project-icon {
