@@ -15,8 +15,8 @@
     --border-color-subtle: #111111;
 
     --box-shadow-blue: 0rem 0rem 1rem 0.25rem var(--accent-blue-dark), 0rem -0.25rem 1rem 0.25rem var(--accent-blue) inset;
-    --box-shadow-tertiary: 0rem -0.5rem 1rem 0.5rem color-mix(in srgb, var(--bg-tertiary), transparent 25%) inset;
-
+    --box-shadow-white-glow: 0rem -0.5rem 1rem 0.5rem rgba(255, 255, 255, 0.025) inset;
+    
     --social-icon-color: #ffffff;
     --radius-default: 16px;
     --max-width: 1200px;
@@ -106,7 +106,7 @@ body::before {
 
 .subsection {
     background-color: color-mix(in srgb, var(--bg-tertiary), transparent 50%);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.75), var(--box-shadow-tertiary);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.75), var(--box-shadow-white-glow);
     border-radius: var(--radius-default);
     padding: 1em;
     border: 1px solid var(--border-color-subtle);
