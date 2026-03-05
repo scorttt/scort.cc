@@ -29,8 +29,8 @@ import { Icon } from 'astro-icon/components';
         background-color: rgba(0, 0, 0, 0.75);
         backdrop-filter: blur(10px) saturate(1.5);
         position: fixed;
-        left: -1rem;
-        right: -1rem;
+        left: 0;
+        right: 0;
         bottom: 0;
         height: var(--footer-height);
         z-index: 50;
@@ -50,6 +50,7 @@ import { Icon } from 'astro-icon/components';
         display: flex;
         gap: 1em;
         align-items: center;
+        text-wrap: nowrap;
     }
 
     .footer-links a {
