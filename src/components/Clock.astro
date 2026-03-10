@@ -33,7 +33,7 @@ import { Icon } from 'astro-icon/components';
 
         if (timeZoneElement) 
         {
-            const myOffset = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE }).match(/GMT([+-]\d+)/)?.[1];
+            const myOffset = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE, timeZoneName: 'shortOffset' }).match(/GMT([+-]\d+)/)?.[1];
 
             const myIntOffset = myOffset ? parseInt(myOffset) : -8;
             const diff = (-now.getTimezoneOffset() / 60) - myIntOffset;
