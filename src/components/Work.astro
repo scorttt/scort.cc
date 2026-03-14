@@ -1,20 +1,162 @@
 ---
 import Block from "./Block.astro";
 import { Icon } from "astro-icon/components";
-const { title, date, description, link, links = [] } = Astro.props;
+const { title, date, description, link, links = [], image } = Astro.props;
 ---
-
 <Block title={title} link={link} links={links} class="p-0">
-    <div class="flex flex-row justify-between">
-        <div class="flex flex-row items-center gap-1 text-tertiary font-bold px-4 py-2">
-            <Icon name="lucide:calendar" class="project-icon" />
-            <span>{date}</span>
+    <div class="project-body px-4 pb-4">
+        {image && (
+            <div class="project-image-wrap">
+                <div class="project-image-fade"></div>
+                <img src={image} alt={title} class="project-image" />
+            </div>
+        )}
+        <div class="project-text">
+            <div class="project-date py-2">
+                <Icon name="lucide:calendar" class="project-icon" />
+                <span>{date}</span>
+            </div>
+            <span class="project-desc pr-4 pb-4">
+                <span class="desc-short">{description}</span>
+                <span class="desc-full">{description} <button class="read-less-btn">read less</button></span>
+            </span>
         </div>
     </div>
-    <span class="flex flex-1 items-center px-4 pb-4">{description}</span>
 </Block>
+
+<script> // entirely written by ai i am not writing this shit myself
+    document.addEventListener("astro:page-load", () => {
+        document.querySelectorAll(".project-desc").forEach((desc) => {
+            const short = desc.querySelector(".desc-short") as HTMLElement;
+            const full = desc.querySelector(".desc-full") as HTMLElement;
+            if (!short || !full) return;
+
+            const text = short.textContent ?? "";
+
+            // force block for measurement
+            short.style.display = "block";
+            const lineHeight = parseInt(getComputedStyle(short).lineHeight);
+            const naturalHeight = short.scrollHeight;
+            const maxHeight = lineHeight * 4;
+
+            if (naturalHeight <= maxHeight) {
+                short.style.display = "";
+                return;
+            }
+
+            // binary search for truncation point
+            let lo = 0, hi = text.length;
+            while (lo < hi - 1) {
+                const mid = Math.floor((lo + hi) / 2);
+                short.textContent = text.slice(0, mid) + " … read more";
+                if (short.scrollHeight <= maxHeight) lo = mid;
+                else hi = mid;
+            }
+
+            const readMoreBtn = document.createElement("button");
+            readMoreBtn.className = "read-more-btn";
+            readMoreBtn.textContent = "read more";
+
+            short.textContent = text.slice(0, lo).trimEnd() + "… ";
+            short.appendChild(readMoreBtn);
+            short.style.display = "";
+
+            readMoreBtn.addEventListener("click", () => {
+                short.classList.add("hidden");
+                full.classList.add("visible");
+            });
+        });
+
+        document.querySelectorAll(".read-less-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const desc = btn.closest(".project-desc") as HTMLElement;
+                if (!desc) return;
+                desc.querySelector(".desc-full")?.classList.remove("visible");
+                desc.querySelector(".desc-short")?.classList.remove("hidden");
+            });
+        });
+    });
+</script>
+
 <style>
+    .project-date {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.25rem;
+        color: var(--text-tertiary);
+        font-weight: bold;
+    }
     .project-icon {
         transform: translateY(-1px);
+    }
+    .project-body {
+        padding-left: 1rem;
+        padding-right: 0;
+        padding-bottom: 0;
+        min-height: 100%;
+    }
+    .project-image-wrap {
+        position: relative;
+        float: right;
+        width: 180px;
+        height: 128px;
+        overflow: hidden;
+        border-top-right-radius: var(--radius-default);
+        border-bottom-right-radius: var(--radius-default);
+    }
+    .project-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .project-image-fade {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 64px;
+        background: linear-gradient(to right, var(--bg-secondary), transparent);
+        z-index: 1;
+        pointer-events: none;
+    }
+    .project-desc {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        padding-bottom: 1rem;
+    }
+    .project-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        min-width: 0;
+    }
+    .desc-full {
+        display: none;
+        align-items: center;
+    }
+    .desc-full.visible {
+        display: inline;
+    }
+</style>
+
+<style is:global>
+    .read-more-btn,
+    .read-less-btn {
+        color: var(--accent-blue);
+        font-size: 0.9rem;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        display: inline;
+    }
+    .read-more-btn:hover,
+    .read-less-btn:hover {
+        text-decoration: underline;
     }
 </style>
