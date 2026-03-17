@@ -6,7 +6,7 @@ const { title, date, description, link, links = [], image } = Astro.props;
 <Block title={title} link={link} links={links} class="p-0">
     <div class="project-body px-4 pb-4">
         {image && (
-            <div class="project-image-wrap">
+            <div class="project-image-wrap pl-4">
                 <div class="project-image-fade"></div>
                 <img src={image} alt={title} class="project-image" />
             </div>
@@ -94,19 +94,17 @@ const { title, date, description, link, links = [], image } = Astro.props;
         padding-bottom: 0;
     }
     .project-image-wrap {
-        margin-top: 1px;
         position: relative;
         float: right;
         width: 180px;
         height: 128px;
         overflow: hidden;
-        border-radius: var(--radius-default);
-        margin-left: 0.15rem;
     }
     .project-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: var(--radius-default);
     }
     .project-desc {
         display: block;
