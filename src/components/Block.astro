@@ -1,7 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 
-const { title, headerColor, collapsible = false, links = [], class: className } = Astro.props;
+const { title, headerColor, collapsible = false, defCollapsed = false, links = [], class: className } = Astro.props;
 
 ---
 
@@ -12,7 +12,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
                 {
                     collapsible == true && 
                     (
-                        <button class="collapse-btn" aria-label="Toggle">
+                        <button class="collapse-btn" aria-label="Toggle" data-default-collapsed={defCollapsed}>
                             <Icon name="lucide:chevron-down" class="collapse-icon" />
                         </button>
                     )
@@ -40,7 +40,7 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
             </div>
         </div>
     </div>
-    <div class={"flex flex-col block-content " + className}>
+    <div class={"flex flex-col block-content " + className + (defCollapsed ? " collapsed" : "")}>
         <slot />
     </div>
 </div>
@@ -50,6 +50,11 @@ const { title, headerColor, collapsible = false, links = [], class: className } 
     {
         document.querySelectorAll(".collapse-btn").forEach((button) => 
         {
+            const icon = button.querySelector(".collapse-icon") as HTMLElement;
+
+            if (button.getAttribute("data-default-collapsed") === "true" && icon)
+                icon.style.transform = "rotate(-90deg)";
+
             button.addEventListener("click", () => 
             {
                 const wrapper = button.closest(".block-wrapper");
