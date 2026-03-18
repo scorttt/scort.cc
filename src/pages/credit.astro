@@ -11,18 +11,18 @@ import Block from "../components/Block.astro";
 
     <Block title="credit" headerColor="blue">
         <ul class="list-disc">
-            <span class="text-xl font-bold">built with <a href="https://astro.build/" target="_blank">Astro</a></span>
-            <li><a href="https://buh.moe/" target="_blank">buh.moe / amemoia</a> for heavy inspiration and some styling</li>
+            <span class="text-xl font-bold">Built with <a href="https://astro.build/" target="_blank">Astro</a></span>
+            <li><a href="https://buh.moe/" target="_blank">buh.moe / amemoia</a> for inspiration and some styling</li>
             <li><a href="https://lanyard.eggsy.xyz/" target="_blank">Lanyard</a> for Discord status</li>
         </ul>
 
         <ul class="list-disc">
-            <span class="text-xl font-bold">font</span>
+            <span class="text-xl font-bold">Font</span>
             <li><a href="https://fonts.google.com/specimen/Nunito" target="_blank">Nunito</a></li>
             <li><a href="https://fonts.google.com/specimen/JetBrains+Mono" target="_blank">JetBrains Mono</a></li>
         </ul>
         <ul class="list-disc">
-            <span class="text-xl font-bold">icons</span>
+            <span class="text-xl font-bold">Icons</span>
               <li><a href="https://lucide.dev/icons/" target="_blank">lucide</a></li>
               <li><a href="https://simpleicons.org/" target="_blank">simple-icons</a></li>
         </ul>
@@ -36,11 +36,11 @@ import Block from "../components/Block.astro";
     }
 
     a {
-        color: dodgerblue;
+        color: var(--accent-blue);
+        font-weight: bold;
     }
     
     a:hover {
         text-decoration-line: underline;
-        color: white;
     }
 </style>
