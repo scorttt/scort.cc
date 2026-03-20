@@ -32,7 +32,7 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
                         >
                             <Icon
                                 name={item.icon}
-                                class="text-tertiary text-base"
+                                class={headerColor != "blue" ? "text-tertiary" : "text-secondary"}
                             />
                         </a>
                     ))

@@ -47,11 +47,11 @@ import SpecsList from "../components/SpecsList.astro"
     </Intro>
 
     <div class="grid gap-4 md:grid-cols-2 not-md:grid-cols-1">
-        <Block title="main" headerColor="blue">
+        <Block title="main" headerColor="blue" links={[{ url: 'https://pcpartpicker.com/list/Zd47h9', icon: 'lucide:square-arrow-out-up-right', label: 'Parts list - PCPartPicker' }]}>
             <SpecsList items={specs.mainpc} />
         </Block>
 
-        <Block title="server / NAS" headerColor="blue">
+        <Block title="server / NAS" headerColor="blue" links={[{ url: 'https://pcpartpicker.com/list/kr3xYX', icon: 'lucide:square-arrow-out-up-right', label: 'Parts list - PCPartPicker' }]}>
             <SpecsList items={specs.server} />
         </Block>
 

@@ -1,9 +1,9 @@
 ---
 import Block from "./Block.astro";
 import { Icon } from "astro-icon/components";
-const { title, date, description, link, links = [], image } = Astro.props;
+const { title, date, description, links = [], image } = Astro.props;
 ---
-<Block title={title} link={link} links={links} class="p-0">
+<Block title={title} links={links} class="p-0">
     <div class="project-body px-4 pb-4">
         {image && (
             <div class="project-image-wrap pl-4">
@@ -12,7 +12,7 @@ const { title, date, description, link, links = [], image } = Astro.props;
             </div>
         )}
         <div class="project-date py-2">
-            <Icon name="lucide:calendar" class="project-icon" />
+            <Icon name="lucide:calendar" class="project-date-icon" />
             <span>{date}</span>
         </div>
         <span class="project-desc pr-4 pb-4">
@@ -106,7 +106,7 @@ const { title, date, description, link, links = [], image } = Astro.props;
         color: var(--text-tertiary);
         font-weight: bold;
     }
-    .project-icon {
+    .project-date-icon {
         transform: translateY(-1px);
     }
     .project-body {
