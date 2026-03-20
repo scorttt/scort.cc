@@ -23,7 +23,7 @@ const { title, date, description, link, links = [], image } = Astro.props;
 </Block>
 
 <script> // entirely written by ai i am not writing this shit myself
-document.addEventListener("astro:page-load", () => {
+    document.addEventListener("astro:page-load", () => {
         document.querySelectorAll(".project-desc").forEach((desc) => {
             const short = desc.querySelector(".desc-short") as HTMLElement;
             const full = desc.querySelector(".desc-full") as HTMLElement;
@@ -31,6 +31,7 @@ document.addEventListener("astro:page-load", () => {
 
             const text = short.textContent ?? "";
 
+            // force block for measurement
             short.style.display = "block";
             const lineHeight = parseInt(getComputedStyle(short).lineHeight);
             const naturalHeight = short.scrollHeight;
@@ -40,7 +41,8 @@ document.addEventListener("astro:page-load", () => {
                 short.style.display = "";
                 return;
             }
-
+            
+            // binary search for truncation point
             let lo = 0, hi = text.length;
             while (lo < hi - 1) {
                 const mid = Math.floor((lo + hi) / 2);
