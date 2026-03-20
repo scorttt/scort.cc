@@ -23,7 +23,7 @@ const { title, date, description, link, links = [], image } = Astro.props;
 </Block>
 
 <script> // entirely written by ai i am not writing this shit myself
-    document.addEventListener("astro:page-load", () => {
+document.addEventListener("astro:page-load", () => {
         document.querySelectorAll(".project-desc").forEach((desc) => {
             const short = desc.querySelector(".desc-short") as HTMLElement;
             const full = desc.querySelector(".desc-full") as HTMLElement;
@@ -31,7 +31,6 @@ const { title, date, description, link, links = [], image } = Astro.props;
 
             const text = short.textContent ?? "";
 
-            // force block for measurement
             short.style.display = "block";
             const lineHeight = parseInt(getComputedStyle(short).lineHeight);
             const naturalHeight = short.scrollHeight;
@@ -42,7 +41,6 @@ const { title, date, description, link, links = [], image } = Astro.props;
                 return;
             }
 
-            // binary search for truncation point
             let lo = 0, hi = text.length;
             while (lo < hi - 1) {
                 const mid = Math.floor((lo + hi) / 2);
@@ -58,19 +56,40 @@ const { title, date, description, link, links = [], image } = Astro.props;
             short.textContent = text.slice(0, lo).trimEnd() + "… ";
             short.appendChild(readMoreBtn);
             short.style.display = "";
-
+            
+            // man what the fuck is claude writing, it works so whatever but this seems really, really stupid
             readMoreBtn.addEventListener("click", () => {
-                short.classList.add("hidden");
-                full.classList.add("visible");
+                const outerGrid = desc.closest(".block-wrapper")?.closest(".block-content");
+                if (!outerGrid) return;
+                const thisWrapper = desc.closest(".block-wrapper") as HTMLElement;
+                const thisTop = thisWrapper?.offsetTop ?? 0;
+            
+                outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
+                    if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
+                    wrapper.querySelectorAll(".project-desc").forEach((sibDesc) => {
+                        if (!sibDesc.querySelector(".read-more-btn")) return;
+                        sibDesc.querySelector(".desc-short")?.classList.add("hidden");
+                        sibDesc.querySelector(".desc-full")?.classList.add("visible");
+                    });
+                });
             });
         });
 
         document.querySelectorAll(".read-less-btn").forEach((btn) => {
             btn.addEventListener("click", () => {
-                const desc = btn.closest(".project-desc") as HTMLElement;
-                if (!desc) return;
-                desc.querySelector(".desc-full")?.classList.remove("visible");
-                desc.querySelector(".desc-short")?.classList.remove("hidden");
+                const outerGrid = btn.closest(".block-wrapper")?.closest(".block-content");
+                if (!outerGrid) return;
+                const thisWrapper = btn.closest(".block-wrapper") as HTMLElement;
+                const thisTop = thisWrapper?.offsetTop ?? 0;
+                
+                outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
+                    if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
+                    wrapper.querySelectorAll(".project-desc").forEach((sibDesc) => {
+                        if (!sibDesc.querySelector(".read-more-btn")) return;
+                        sibDesc.querySelector(".desc-full")?.classList.remove("visible");
+                        sibDesc.querySelector(".desc-short")?.classList.remove("hidden");
+                    });
+                });
             });
         });
     });
