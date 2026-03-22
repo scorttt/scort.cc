@@ -37,7 +37,7 @@ const { title, date, links = [], image } = Astro.props;
             short.style.display = "block";
             const lineHeight = parseInt(getComputedStyle(short).lineHeight);
             const naturalHeight = short.scrollHeight;
-            const maxHeight = lineHeight * 4;
+            const maxHeight = lineHeight * 5;
 
             if (naturalHeight <= maxHeight) {
                 short.style.display = "";
@@ -79,7 +79,7 @@ const { title, date, links = [], image } = Astro.props;
 
             short.style.display = "block";
             while (short.scrollHeight > maxHeight && lo > 0) {
-                lo -= 1;
+                lo--;
                 readMoreBtn = applyTruncation(lo);
             }
             short.style.display = "";
@@ -183,8 +183,8 @@ const { title, date, links = [], image } = Astro.props;
     .project-image-wrap {
         position: relative;
         float: right;
-        width: 180px;
-        height: 128px;
+        width: 195px;
+        height: 143px;
         overflow: hidden;
     }
     .project-image {
