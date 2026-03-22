@@ -7,70 +7,84 @@ import Project from "../components/Work.astro";
 const pageDesc = "work";
 ---
 
-<Base title="scort / work"  description={pageDesc}>
+<Base title="scort / work" description={pageDesc}>
 
     <Intro page="/ work" title={pageDesc}>
         a bunch of stuff i've made, all varying in scopes and sizes
     </Intro>
     <Block title="Overwatch Workshop" class="grid gap-4 md:grid-cols-2" headerColor="blue" collapsible={true}>
-            <span class="col-span-full">
-                All scripts were built with <a href="https://github.com/ItsDeltin/Overwatch-Script-To-Workshop" target="_blank">OSTW</a><br>
-                Compiling requires my personal <a href="https://github.com/scorttt/macros-ostw" target="_blank">macros</a>, a collection of shorthand and quality-of-life functions to make OSTW development less of a hassle
-            </span>
+        <span class="col-span-full">
+            All scripts were built with <a href="https://github.com/ItsDeltin/Overwatch-Script-To-Workshop" target="_blank">OSTW</a><br>
+            Compiling requires my personal <a href="https://github.com/scorttt/macros-ostw" target="_blank">macros</a>, a collection of shorthand and quality-of-life functions to make OSTW development less of a hassle
+        </span>
         <Project
             title="Yet Another Tryhard FFA"
             date="November 2020 - February 2026"
             links={[
                 { url: 'https://github.com/scorttt/yatffa-ostw', icon: 'simple-icons:github', label: 'GitHub' },
                 { url: 'https://workshop.codes/BKRXY', icon: 'lucide:wrench', label: 'workshop.codes' },
-              ]}
-            description="Rebalanced FFA gamemode, intended for competitive players to include in their warm-up or practice regimen. Includes dynamic statistics, an in-game cursor menu that allows players to customize their experience, custom Japanese/Korean localization, and a slew of lobby host options via Workshop Settings. Colloquially known as 'YATFFA' and has been the preferred 'Tryhard FFA' gamemode for some competitive players. Updates only occur when new heroes are added to the game that I believe would fit well within the gamemode."
-        />
+            ]}
+        >
+            Rebalanced FFA gamemode, intended for competitive players to include in their warm-up or practice regimen, with dynamic statistics, 
+            an in-game cursor menu to allow individual players to customize their experience, custom localizated strings, with Japanese/Korean localization, 
+            a slew of options via Workshop Settings for lobby host customization.
+            Colloquially known as 'YATFFA' and has been the preferred 'Tryhard FFA' gamemode for some competitive players. 
+            Updates occur when new heroes are added to the game that I believe would fit well within the gamemode.
+        </Project>
         <Project
             title="Instagib" 
             date="October 2020 - September 2025"
             links={[
                 { url: 'https://github.com/scorttt/instagib-ostw', icon: 'simple-icons:github', label: 'GitHub' },
-                { url: 'https://workshop.codes/APPPX', icon: 'lucide:wrench', label: 'workshop.codes - Oct 2020 ver.'  },
-              ]}
-            description="Fast paced Xonotic / Quake 3 Arena / UT2004 inspired one-shot-one-kill gamemode with a variety of pickups to dramatically modify weapon or player ability, as well as a variety of movement options such as bunnyhopping for the potential to gain absurd speeds, brief flight, and a knockback projectile for disorienting players or for mobility usage. A personal pet project in Workshop that has been used to learn and practice vector math."
-        />
+                { url: 'https://workshop.codes/APPPX', icon: 'lucide:wrench', label: 'workshop.codes - Oct 2020 ver.' },
+            ]}
+        >
+            Fast paced Xonotic / Quake 3 Arena / UT2004 inspired one-shot-one-kill gamemode with a variety of pickups to dramatically modify weapon or player ability, as well as a variety of movement 
+            options such as bunnyhopping for the potential to gain absurd speeds, brief flight, and a knockback projectile for disorienting players or for mobility usage. A personal pet project in Workshop 
+            that has been used to learn and practice vector math.
+        </Project>
         <Project
             title="Molotov with Physics"
             date="April 2021"
             links={[
                 { url: 'https://github.com/scorttt/workshop-scripts/blob/main/molotov.del', icon: 'simple-icons:github', label: 'GitHub' },
-                { url: 'https://workshop.codes/PAVX2', icon: 'lucide:wrench', label: 'workshop.codes'  },
-              ]}
-            description="Proof of concept custom projectile that does not use the built-in 'Create Projectile' function introduced to Overwatch Workshop in late 2023, nor in-engine physics."
-        />
+                { url: 'https://workshop.codes/PAVX2', icon: 'lucide:wrench', label: 'workshop.codes' },
+            ]}
+        >
+            Proof of concept custom projectile that does not use the built-in 'Create Projectile' function introduced to Overwatch Workshop in late 2023, nor in-engine physics.
+        </Project>
         <Project
             title="Waving Cube" 
             date="March 2023"
             links={[
                 { url: 'https://github.com/scorttt/workshop-scripts/blob/main/waving.del', icon: 'simple-icons:github', label: 'GitHub' },
-                { url: 'https://workshop.codes/C6GD9', icon: 'lucide:wrench', label: 'workshop.codes'  },
-              ]}
-            description="Simple waving cube visualization."
-        />
+                { url: 'https://workshop.codes/C6GD9', icon: 'lucide:wrench', label: 'workshop.codes' },
+            ]}
+        >
+            Simple waving cube visualization.
+        </Project>
         <Project
             title="Swiss" 
             date="July 2023"
             links={[{ url: 'https://github.com/scorttt/swiss-ostw', icon: 'simple-icons:github', label: 'GitHub' }]}
-            description="Unfinished in-game bot replay editor with only the custom scrubbing timeline UI completed. Originally conceived to assist the Los Angeles Gladiators' social media team in creating short-form content, prior to the firing of all creatives and eventual dissolution of the parent organization in October 2023."
-        />
+        >
+            Unfinished in-game bot replay editor with only the custom scrubbing timeline UI completed. Originally conceived to assist the Los Angeles Gladiators' social media team in creating short-form content, 
+            prior to the firing of all creatives and eventual dissolution of the parent organization in October 2023.
+        </Project>
         <Project
             title="Mimic" 
             date="February 2020 - February 2024"
             links={[{ url: 'https://github.com/scorttt/mimic-ostw', icon: 'simple-icons:github', label: 'GitHub' }]}
-            description="1v1, 2v2, or 3v3 mode where many bots spawn to fight by your side and mimics every action that you do. Bot amount changes dynamically based on the amount of human players in the game."
-        />
+        >
+            1v1, 2v2, or 3v3 mode where many bots spawn to fight by your side and mimics every action that you do. Bot amount changes dynamically based on the amount of human players in the game.
+        </Project>
         <Project
             title="Miscellaneous Scripts" 
             date="2019 - 2023"
             links={[{ url: 'https://github.com/scorttt/workshop-scripts', icon: 'simple-icons:github', label: 'GitHub' }]}
-            description="Random variety of scripts that didn't end up being their own independent project for whatever reason, whether it be them evolving into larger projects, an experimental snippet, or just practice."
-        />
+        >
+            Random variety of scripts that didn't end up being their own independent project for whatever reason, whether it be them evolving into larger projects, an experimental snippet, or just practice.
+        </Project>
     </Block>
 
     <Block title="Mirror's Edge Catalyst Mods" class="grid gap-4 md:grid-cols-2" headerColor="blue" collapsible={true}>
@@ -79,41 +93,46 @@ const pageDesc = "work";
             title="No Naturally Spawning K-Sec" 
             date="February 2018"
             links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/93', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-            description="Removes enemy patrols in freeroam. Required mod for 'All Dashes No TP (ADNTP)' speedruns."
-        />
+        >
+            Removes enemy patrols in freeroam. Required mod for 'All Dashes No TP (ADNTP)' speedruns.
+        </Project>
         <Project
             title="Lighting Overhaul for Better Skies" 
             date="August 2017"
             links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/77', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-            description="Drastically modifies world lighting, and allows moonlight to cast shadows."
-        />
+        >
+            Drastically modifies world lighting, and allows moonlight to cast shadows.
+        </Project>
         <Project
             title="Takedowns in Freeroam" 
             date="July 2017"
             links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/44', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-            description="Allows takedown interactions in freeroam."
-        />
+        >
+            Allows takedown interactions in freeroam.
+        </Project>
         <Project
             title="Repaired Buildings" 
             date="July 2017"
             links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/63', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-            description="Repairs any story related buildings in freeroam if they're broken due to story progression."
-        />
+        >
+            Repairs any story related buildings in freeroam if they're broken due to story progression.
+        </Project>
         <Project
             title="No Dirty Walls"
             date="July 2017"
             links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/54', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-            description="Removes dirty footprints, slide marks, dirt, and grime in the world."
-        />
+        >
+            Removes dirty footprints, slide marks, dirt, and grime in the world.
+        </Project>
         <Project
             title="No CC on Knockout"
             date="June 2017"
             links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/42', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-            description="Removes color correction flash on enemy knockouts."
-        />
+        >
+            Removes color correction flash on enemy knockouts.
+        </Project>
     </Block>
-    
-        
+
 </Base>
 
 <style>

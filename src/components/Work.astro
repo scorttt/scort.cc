@@ -1,7 +1,7 @@
 ---
 import Block from "./Block.astro";
 import { Icon } from "astro-icon/components";
-const { title, date, description, links = [], image } = Astro.props;
+const { title, date, links = [], image } = Astro.props;
 ---
 <Block title={title} links={links} class="p-0">
     <div class="project-body px-4 pb-4">
@@ -16,20 +16,22 @@ const { title, date, description, links = [], image } = Astro.props;
             <span>{date}</span>
         </div>
         <span class="project-desc pr-4 pb-4">
-            <span class="desc-short">{description}</span>
-            <span class="desc-full">{description} <button class="read-less-btn">read less</button></span>
+            <span class="desc-short"><slot /></span>
+            <span class="desc-full"><slot /> <button class="read-less-btn">read less</button></span>
         </span>
-</div>
+    </div>
 </Block>
 
-<script> // entirely written by ai i am not writing this shit myself
+<script>
+    // this entire script is written by ai i am not writing this shit myself this looks painful
+    // im not even going to try to understand this and its probably really inefficient but i honestly dont care if it works
     document.addEventListener("astro:page-load", () => {
         document.querySelectorAll(".project-desc").forEach((desc) => {
             const short = desc.querySelector(".desc-short") as HTMLElement;
             const full = desc.querySelector(".desc-full") as HTMLElement;
             if (!short || !full) return;
 
-            const text = short.textContent ?? "";
+            const originalHTML = short.innerHTML;
 
             // force block for measurement
             short.style.display = "block";
@@ -43,6 +45,7 @@ const { title, date, description, links = [], image } = Astro.props;
             }
             
             // binary search for truncation point
+            const text = short.textContent ?? "";
             let lo = 0, hi = text.length;
             while (lo < hi - 1) {
                 const mid = Math.floor((lo + hi) / 2);
@@ -51,12 +54,34 @@ const { title, date, description, links = [], image } = Astro.props;
                 else hi = mid;
             }
 
-            const readMoreBtn = document.createElement("button");
-            readMoreBtn.className = "read-more-btn";
-            readMoreBtn.textContent = "read more";
+            const applyTruncation = (charLimit: number) => {
+                const trimmed = text.slice(0, charLimit).trimEnd();
+                const lastSpace = trimmed.lastIndexOf(" ");
+                const wordTrimmed = (lastSpace > 0 ? trimmed.slice(0, lastSpace) : trimmed).replace(/[,;:!?.]+$/, "");
+                const wordLimit = wordTrimmed.length;
+            
+                short.innerHTML = originalHTML;
+                truncateTextNodes(short, wordLimit);
+            
+                const btn = document.createElement("button");
+                btn.className = "read-more-btn";
+                btn.textContent = "read more";
+            
+                // find deepest last block element to append into
+                const lastBlock = findLastBlock(short);
+                const target = lastBlock ?? short;
+                target.appendChild(document.createTextNode("… "));
+                target.appendChild(btn);
+                return btn;
+            };
 
-            short.textContent = text.slice(0, lo).trimEnd() + "… ";
-            short.appendChild(readMoreBtn);
+            let readMoreBtn = applyTruncation(lo);
+
+            short.style.display = "block";
+            while (short.scrollHeight > maxHeight && lo > 0) {
+                lo -= 1;
+                readMoreBtn = applyTruncation(lo);
+            }
             short.style.display = "";
             
             // man what the fuck is claude writing, it works so whatever but this seems really, really stupid
@@ -65,7 +90,7 @@ const { title, date, description, links = [], image } = Astro.props;
                 if (!outerGrid) return;
                 const thisWrapper = desc.closest(".block-wrapper") as HTMLElement;
                 const thisTop = thisWrapper?.offsetTop ?? 0;
-            
+
                 outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
                     if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
                     wrapper.querySelectorAll(".project-desc").forEach((sibDesc) => {
@@ -77,24 +102,65 @@ const { title, date, description, links = [], image } = Astro.props;
             });
         });
 
-        document.querySelectorAll(".read-less-btn").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const outerGrid = btn.closest(".block-wrapper")?.closest(".block-content");
-                if (!outerGrid) return;
-                const thisWrapper = btn.closest(".block-wrapper") as HTMLElement;
-                const thisTop = thisWrapper?.offsetTop ?? 0;
-                
-                outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
-                    if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
-                    wrapper.querySelectorAll(".project-desc").forEach((sibDesc) => {
-                        if (!sibDesc.querySelector(".read-more-btn")) return;
-                        sibDesc.querySelector(".desc-full")?.classList.remove("visible");
-                        sibDesc.querySelector(".desc-short")?.classList.remove("hidden");
-                    });
+        document.addEventListener("click", (e) => {
+            const btn = (e.target as HTMLElement).closest(".read-less-btn");
+            if (!btn) return;
+            const outerGrid = btn.closest(".block-wrapper")?.closest(".block-content");
+            if (!outerGrid) return;
+            const thisWrapper = btn.closest(".block-wrapper") as HTMLElement;
+            const thisTop = thisWrapper?.offsetTop ?? 0;
+
+            outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
+                if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
+                wrapper.querySelectorAll(".project-desc").forEach((sibDesc) => {
+                    if (!sibDesc.querySelector(".read-more-btn")) return;
+                    sibDesc.querySelector(".desc-full")?.classList.remove("visible");
+                    sibDesc.querySelector(".desc-short")?.classList.remove("hidden");
                 });
             });
         });
     });
+
+    function truncateTextNodes(node: Node, limit: number): number {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent ?? "";
+            if (limit <= 0) {
+                node.textContent = "";
+                return 0;
+            }
+            if (text.length <= limit) {
+                return limit - text.length;
+            }
+            node.textContent = text.slice(0, limit).trimEnd();
+            return 0;
+        }
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            const children = Array.from(node.childNodes);
+            for (const child of children) {
+                if (limit <= 0) {
+                    (node as Element).removeChild(child);
+                } else {
+                    limit = truncateTextNodes(child, limit);
+                }
+            }
+        }
+        return limit;
+    }
+    
+    function findLastBlock(node: HTMLElement): HTMLElement | null {
+        const blockTags = new Set(["LI", "P", "DIV", "SPAN"]);
+        const children = Array.from(node.childNodes).reverse();
+        for (const child of children) {
+            if (child.nodeType === Node.ELEMENT_NODE) {
+                const el = child as HTMLElement;
+                if (blockTags.has(el.tagName) && el.textContent?.trim()) {
+                    const deeper = findLastBlock(el);
+                    return deeper ?? el;
+                }
+            }
+        }
+        return null;
+    }
 </script>
 
 <style>
@@ -156,4 +222,10 @@ const { title, date, description, links = [], image } = Astro.props;
     .read-less-btn:hover {
         text-decoration: underline;
     }
+
+    .project-desc li {
+        margin-left: 1.2rem;
+        margin-right: 1.2rem;
+    }
+
 </style>
