@@ -7,8 +7,9 @@ const { title, date, links = [], image } = Astro.props;
     <div class="project-body px-4 pb-4">
         {image && (
             <div class="project-image-wrap pl-4">
-                <div class="project-image-fade"></div>
-                <img src={image} alt={title} class="project-image" />
+                <a href={image} target="_blank" rel="noopener noreferrer">
+                    <img src={image} alt={title} class="project-image" />
+                </a>
             </div>
         )}
         <div class="project-date py-2">
@@ -183,8 +184,8 @@ const { title, date, links = [], image } = Astro.props;
     .project-image-wrap {
         position: relative;
         float: right;
-        width: 195px;
-        height: 143px;
+        width: 234px;
+        height: 152px;
         overflow: hidden;
     }
     .project-image {
@@ -224,6 +225,8 @@ const { title, date, links = [], image } = Astro.props;
     }
 
     .project-desc li {
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
         margin-left: 1.2rem;
         margin-right: 1.2rem;
     }
