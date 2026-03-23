@@ -13,6 +13,8 @@
     --accent-blue-dark: #003a70;
     --border-color: #222222;
     --border-color-subtle: #111111;
+    
+    --accent-blue-transparent: rgba(0, 98, 189, 0.5);
 
     --box-shadow-blue: 0rem 0rem 1rem 0.25rem var(--accent-blue-dark), 0rem -0.25rem 1rem 0.25rem var(--accent-blue) inset;
     --box-shadow-white-glow: 0rem -0.5rem 1rem 0.5rem rgba(255, 255, 255, 0.025) inset;
@@ -77,9 +79,12 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(ellipse 120% 90% at 50% 0%, rgba(0, 98, 189, 0.5) 0%, rgba(0, 98, 189, 0.4) 20%, transparent 60%);
+    background: 
+    radial-gradient(ellipse 2300px 970px at 50% 0%, rgba(0, 98, 189, 0.5) 0%, rgba(0, 98, 189, 0.4) 20%, transparent 60%),
+    radial-gradient(ellipse 150px 150px at var(--mouse-x, 50%) var(--mouse-y, 0%), rgba(0, 98, 189, 0.6) 0%, rgba(0, 98, 189, 0.5) 20%, transparent 100%);
     pointer-events: none;
     z-index: -1;
+    transition: background 0.1s ease;
 }
 
 @layer utilities {
