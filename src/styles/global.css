@@ -81,7 +81,7 @@ body::before {
     bottom: 0;
     background: 
     radial-gradient(ellipse 2300px 970px at 50% 0%, rgba(0, 98, 189, 0.5) 0%, rgba(0, 98, 189, 0.4) 20%, transparent 60%),
-    radial-gradient(ellipse 150px 150px at var(--mouse-x, 50%) var(--mouse-y, 0%), rgba(0, 98, 189, 0.6) 0%, rgba(0, 98, 189, 0.5) 20%, transparent 100%);
+    radial-gradient(ellipse 300px 300px at var(--mouse-x, 50%) var(--mouse-y, 0%), rgba(0, 98, 189, 0.6) 0%, rgba(0, 98, 189, 0.5) 0%, transparent 100%);
     pointer-events: none;
     z-index: -1;
     transition: background 0.1s ease;
@@ -127,4 +127,11 @@ body::before {
 
 .box-shadow-blue {
     box-shadow: var(--box-shadow-blue);
+}
+
+li {
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+    margin-left: 1.2rem;
+    margin-right: 1.2rem;
 }
