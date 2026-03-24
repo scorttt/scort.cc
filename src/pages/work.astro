@@ -12,6 +12,104 @@ const pageDesc = "work";
     <Intro page="/ work" title={pageDesc}>
         a bunch of stuff i've made, all varying in scopes and sizes
     </Intro>
+
+    <Block title="Godot" class="grid gap-4 md:grid-cols-2" headerColor="blue" collapsible={true}>
+        <Project title="Project" date="TBD">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+        </Project>
+        <Project title="Project" date="TBD">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+        </Project>
+        <div class="col-span-full">
+            <Block title="20 Games Challenge" class="grid gap-4 md:grid-cols-2" collapsible={true} defCollapsed={false}>
+                <span class="col-span-full">
+                    Projects created for the <a href="https://20_games_challenge.gitlab.io/challenge/" target="_blank">20 Games Challenge</a> to learn a new and different creative technical medium after 
+                    years of disappointment with Overwatch Workshop being neglected and broken. <br></br>
+                    The end goal of each game is to not only get a better grasp with the engine, but to also recreate the game in their original art style - with some creative liberties taken.<br></br>
+                    <li>No web builds for C# projects since Godot does not support web builds for C# projects.</li>
+                    <li>No macOS builds are available since I don't own any Apple devices and Apple makes macOS builds unnecessarily annoying anyways.</li>
+                    <br>
+                    You may notice that there are a lot less than 20 games, despite the name of the challenge - I just don't care about or hold any prolonged interest in these games.
+                </span>
+                <Project
+                    title="Tetris"
+                    date="TBD - C#"
+                    links={[
+                        { url: 'https://github.com/scorttt/godot-tetris-cs', icon: 'simple-icons:github', label: 'GitHub' },
+                        {
+                            icon: 'lucide:download',
+                            label: 'Download',
+                            submenu: [
+                                { url: '/games/tetris/tetris.exe', icon: 'mingcute:windows-fill', label: 'Download for Windows (.exe)' },
+                                { url: '/games/tetris/tetris.x86_64', icon: 'mingcute:linux-line', label: 'Download for Linux (.x86_64)' },
+                            ]
+                        }
+                    ]}
+                >
+                    Not a part of the main 20 Games Challenge but figured it was a great fit. Main goal of this project was to learn how to transition away from GDScript to C# since I'm personally not a fan of
+                    GDScript's syntax.
+                </Project>
+                <Project 
+                    title="Breakout" 
+                    date="TBD - GDScript"
+                    links={[
+                        { url: 'https://github.com/scorttt/godot-flappybird', icon: 'simple-icons:github', label: 'GitHub' },
+                        {
+                            icon: 'lucide:download',
+                            label: 'Download',
+                            submenu: [
+                                { url: '/games/breakout/breakout.exe', icon: 'mingcute:windows-fill', label: 'Download for Windows (.exe)' },
+                                { url: '/games/breakout/breakout.x86_64', icon: 'mingcute:linux-line', label: 'Download for Linux (.x86_64)' },
+                            ]
+                        }
+                    ]}
+                >
+                    Similar to Pong, but with much more content, with powerups and multiple levels.
+                    <li>Learned level design, scene transitions, and randomized gameplay elements.</li>
+                </Project>
+                <Project
+                    title="Flappy Bird"
+                    date="March 2025 - GDScript"
+                    links={[
+                        { url: 'https://github.com/scorttt/godot-flappybird', icon: 'simple-icons:github', label: 'GitHub' },
+                        { url: '/games/flappybird/flappybird.html', icon: 'lucide:play', label: 'Play in Browser' },
+                        {
+                            icon: 'lucide:download',
+                            label: 'Download',
+                            submenu: [
+                                { url: '/games/flappybird/flappybird.exe', icon: 'mingcute:windows-fill', label: 'Download for Windows (.exe)' },
+                                { url: '/games/flappybird/flappybird.x86_64', icon: 'mingcute:linux-line', label: 'Download for Linux (.x86_64)' },
+                            ]
+                        }
+                    ]}
+                >
+                    Flappy Bird clone with some modified assets. Includes a complete UI and basic saving.
+                    <li>Learned UI implementation, array usage, asset repetition, parallax, saved games, settings, and basic audio mixing.</li>
+                </Project>
+                <Project
+                    title="Pong"
+                    date="March 2025 - GDScript"
+                    image="/games/pong/screenshot.jpg"
+                    links={[
+                        { url: 'https://github.com/scorttt/godot-pong', icon: 'simple-icons:github', label: 'GitHub' },
+                        { url: '/games/pong/pong.html', icon: 'lucide:play', label: 'Play in Browser' },
+                        {
+                            icon: 'lucide:download',
+                            label: 'Download',
+                            submenu: [
+                                { url: '/games/pong/pong.exe', icon: 'mingcute:windows-fill', label: 'Download for Windows (.exe)' },
+                                { url: '/games/pong/pong.x86_64', icon: 'mingcute:linux-line', label: 'Download for Linux (.x86_64)' },
+                            ]
+                        }
+                    ]}
+                >
+                    Simple endless pong game with an automated opponent.
+                    <li>Learned Godot basics, collision layer/masks, and how physics properties work.</li>
+                </Project>
+            </Block>
+        </div>
+    </Block>
+
     <Block title="Overwatch Workshop" class="grid gap-4 md:grid-cols-2" headerColor="blue" collapsible={true}>
         <span class="col-span-full">
             All scripts were built with <a href="https://github.com/ItsDeltin/Overwatch-Script-To-Workshop" target="_blank">OSTW</a><br>
@@ -25,10 +123,12 @@ const pageDesc = "work";
                 { url: 'https://workshop.codes/BKRXY', icon: 'lucide:wrench', label: 'workshop.codes' },
             ]}
         >
-            Rebalanced FFA gamemode, intended for competitive players to include in their warm-up or practice regimen, with dynamic statistics, 
-            an in-game cursor menu to allow individual players to customize their experience, custom localizated strings, with Japanese/Korean localization, 
-            a slew of options via Workshop Settings for lobby host customization.
-            <br></br>
+            Rebalanced FFA gamemode, intended for competitive players to include in their warm-up or practice regimen. 
+            <li>Dynamic statistics</li>
+            <li>In-game cursor menu to allow individual players to customize their experience</li>
+            <li>Custom localizated strings with Japanese/Korean localization</li>
+            <li>Slew of options via Workshop Settings for lobby host customization</li>
+            <br>
             Colloquially known as 'YATFFA' and has been the preferred 'Tryhard FFA' gamemode for some competitive players.
             <br></br>
             Updates occur when new heroes are added to the game that I believe would fit well within the gamemode.
@@ -41,10 +141,28 @@ const pageDesc = "work";
                 { url: 'https://workshop.codes/APPPX', icon: 'lucide:wrench', label: 'workshop.codes - Oct 2020 ver.' },
             ]}
         >
-            Fast paced Xonotic / Quake 3 Arena / UT2004 inspired one-shot-one-kill gamemode with a variety of pickups to dramatically modify weapon or player ability, as well as a variety of movement 
-            options such as bunnyhopping for the potential to gain absurd speeds, brief flight, and a knockback projectile for disorienting players or for mobility usage.
-            <br></br>
-            A personal pet project that has been used to learn and practice vector math.
+            Fast paced Xonotic / Quake 3 Arena / UT2004 inspired one-shot-one-kill gamemode with a pickup centric gameplay loop.<br>
+            A personal pet project that I've used to learn and practice vector math.
+            <li>Pickups are scattered throughout the map to change how your weapon fires</li>
+            <ul>
+                <li>Pierce - Shots go through multiple surfaces</li>
+                <li>Ricochet - Shots bounce off of surfaces</li>
+                <li>Spread - Shots spread out in a cone pattern</li>
+                <li>Spark - Explosive shots, with an explosive projectile that can be detonated early by shooting it for an increased radius</li>
+                <li>Electro - Explosive shots, with a bouncing projectile that explodes shortly after hitting a surface</li>
+                <li>Needle - Rapid fire homing shots</li>
+                <li>Volt - Laser that decreases in accuracy and range the longer its fired</li>
+                <li>Arc - One shot laser that bounces off of surfaces</li>
+                <li>Ballista - Large radius explosive shot that ignores all surfaces</li>
+            </ul>
+            <li>Additionally, a large variety of movement options are always readily available</li>
+            <ul>
+                <li>Bunnyhopping for the potential to gain absurd speeds</li>
+                <li>Knockback projectile for disorienting players or for mobility usage</li>
+                <li>Fuel management for dodging and brief flight</li>
+            </ul>
+            <br>
+            Eventually, I want to evolve this into it's own independent project, completely detached from Overwatch Workshop.
         </Project>
         <Project
             title="Molotov with Physics"
