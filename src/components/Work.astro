@@ -37,90 +37,69 @@ const { title, date, links = [], image } = Astro.props;
             // force block for measurement
             short.style.display = "block";
             const lineHeight = parseInt(getComputedStyle(short).lineHeight);
-            const naturalHeight = short.scrollHeight;
-            const maxHeight = lineHeight * 5;
+            const maxHeight = lineHeight * 4;
 
-            if (naturalHeight <= maxHeight) {
-                short.style.display = "";
-                return;
-            }
-            
+            if (short.scrollHeight <= maxHeight) { 
+                short.style.display = ""; 
+                return; 
+            }   
+
             // binary search for truncation point
             const text = short.textContent ?? "";
             let lo = 0, hi = text.length;
             while (lo < hi - 1) {
                 const mid = Math.floor((lo + hi) / 2);
                 short.textContent = text.slice(0, mid) + " … read more";
-                if (short.scrollHeight <= maxHeight) lo = mid;
-                else hi = mid;
+                if (short.scrollHeight <= maxHeight) 
+                    lo = mid; 
+                else 
+                    hi = mid;
             }
 
-            const applyTruncation = (charLimit: number) => {
-                const trimmed = text.slice(0, charLimit).trimEnd();
-                const lastSpace = trimmed.lastIndexOf(" ");
-                const wordTrimmed = (lastSpace > 0 ? trimmed.slice(0, lastSpace) : trimmed).replace(/[,;:!?.]+$/, "");
-                const wordLimit = wordTrimmed.length;
-            
+            const applyTruncation = (limit: number) => {
+                const wordTrimmed = (text.slice(0, limit).trimEnd()).replace(/[,;:!?.]+$/, "");
                 short.innerHTML = originalHTML;
-                truncateTextNodes(short, wordLimit);
-            
+                truncateTextNodes(short, wordTrimmed.length);
                 const btn = document.createElement("button");
                 btn.className = "read-more-btn";
                 btn.textContent = "read more";
-            
-                // find deepest last block element to append into
-                const lastBlock = findLastBlock(short);
-                const target = lastBlock ?? short;
-                target.appendChild(document.createTextNode("… "));
-                target.appendChild(btn);
+                (findLastBlock(short) ?? short).append("… ", btn);
                 return btn;
             };
 
             let readMoreBtn = applyTruncation(lo);
+            short.style.display = "block"
 
-            short.style.display = "block";
             while (short.scrollHeight > maxHeight && lo > 0) {
                 lo--;
                 readMoreBtn = applyTruncation(lo);
             }
-            short.style.display = "";
-            
-            // man what the fuck is claude writing, it works so whatever but this seems really, really stupid
-            readMoreBtn.addEventListener("click", () => {
-                const outerGrid = desc.closest(".block-wrapper")?.closest(".block-content");
-                if (!outerGrid) return;
-                const thisWrapper = desc.closest(".block-wrapper") as HTMLElement;
-                const thisTop = thisWrapper?.offsetTop ?? 0;
 
-                outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
-                    if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
-                    wrapper.querySelectorAll(".project-desc").forEach((sibDesc) => {
-                        if (!sibDesc.querySelector(".read-more-btn")) return;
-                        sibDesc.querySelector(".desc-short")?.classList.add("hidden");
-                        sibDesc.querySelector(".desc-full")?.classList.add("visible");
-                    });
-                });
-            });
+            short.style.display = "";
+
+            readMoreBtn.addEventListener("click", () => syncRow(desc, true));
         });
 
         document.addEventListener("click", (e) => {
             const btn = (e.target as HTMLElement).closest(".read-less-btn");
-            if (!btn) return;
-            const outerGrid = btn.closest(".block-wrapper")?.closest(".block-content");
-            if (!outerGrid) return;
-            const thisWrapper = btn.closest(".block-wrapper") as HTMLElement;
-            const thisTop = thisWrapper?.offsetTop ?? 0;
-
-            outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
-                if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
-                wrapper.querySelectorAll(".project-desc").forEach((sibDesc) => {
-                    if (!sibDesc.querySelector(".read-more-btn")) return;
-                    sibDesc.querySelector(".desc-full")?.classList.remove("visible");
-                    sibDesc.querySelector(".desc-short")?.classList.remove("hidden");
-                });
-            });
+            if (btn)
+                syncRow(btn.closest(".project-desc") as HTMLElement, false);
         });
     });
+
+    function syncRow(desc: Element, expand: boolean) {
+        const outerGrid = desc.closest(".block-wrapper")?.closest(".block-content");
+        if (!outerGrid) return;
+        const thisTop = (desc.closest(".block-wrapper") as HTMLElement)?.offsetTop ?? 0;
+        outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
+            if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
+            wrapper.querySelectorAll(".project-desc").forEach((sib) => {
+                if (!sib.querySelector(".read-more-btn")) return;
+                sib.querySelector(".desc-short")?.classList.toggle("hidden", expand);
+                sib.querySelector(".desc-full")?.classList.toggle("visible", expand);
+            });
+        });
+    }
 
     function truncateTextNodes(node: Node, limit: number): number {
         if (node.nodeType === Node.TEXT_NODE) {
@@ -129,20 +108,18 @@ const { title, date, links = [], image } = Astro.props;
                 node.textContent = "";
                 return 0;
             }
-            if (text.length <= limit) {
+            if (text.length <= limit)
                 return limit - text.length;
-            }
             node.textContent = text.slice(0, limit).trimEnd();
             return 0;
         }
         if (node.nodeType === Node.ELEMENT_NODE) {
             const children = Array.from(node.childNodes);
             for (const child of children) {
-                if (limit <= 0) {
+                if (limit <= 0)
                     (node as Element).removeChild(child);
-                } else {
+                else
                     limit = truncateTextNodes(child, limit);
-                }
             }
         }
         return limit;
@@ -150,14 +127,11 @@ const { title, date, links = [], image } = Astro.props;
     
     function findLastBlock(node: HTMLElement): HTMLElement | null {
         const blockTags = new Set(["LI", "P", "DIV", "SPAN"]);
-        const children = Array.from(node.childNodes).reverse();
-        for (const child of children) {
+        for (const child of Array.from(node.childNodes).reverse()) {
             if (child.nodeType === Node.ELEMENT_NODE) {
                 const el = child as HTMLElement;
-                if (blockTags.has(el.tagName) && el.textContent?.trim()) {
-                    const deeper = findLastBlock(el);
-                    return deeper ?? el;
-                }
+                if (blockTags.has(el.tagName) && el.textContent?.trim())
+                    return findLastBlock(el) ?? el;
             }
         }
         return null;
@@ -184,8 +158,8 @@ const { title, date, links = [], image } = Astro.props;
     .project-image-wrap {
         position: relative;
         float: right;
-        width: 234px;
-        height: 152px;
+        width: 200px;
+        height: 130px;
         overflow: hidden;
     }
     .project-image {
