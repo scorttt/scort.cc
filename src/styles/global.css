@@ -128,23 +128,3 @@ body::before {
 .box-shadow-blue {
     box-shadow: var(--box-shadow-blue);
 }
-
-ul {
-    list-style: none;
-    padding-left: 1.2rem;
-}
-
-li {
-    list-style: none;
-    position: relative;
-    padding-left: 0.9rem;
-    margin-top: 0.3rem;
-    margin-bottom: 0.3rem;
-}
-
-li::before {
-    content: '•';
-    position: absolute;
-    left: 0;
-    top: -1px;
-}
