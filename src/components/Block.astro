@@ -99,7 +99,10 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
                 existing?.remove();
     
                 if (triggerExists) 
+                {
+                    unlockScroll();
                     return;
+                }
         
                 const wrap = trigger.closest(".submenu-wrap") as HTMLElement;
                 const template = wrap?.querySelector(".submenu") as HTMLElement;
