@@ -2,27 +2,38 @@
 import { Icon } from "astro-icon/components";
 
 const { title, headerColor, collapsible = false, defCollapsed = false, links = [], class: className } = Astro.props;
-
 ---
 
 <div class="flex flex-col block-wrapper">
     <div class="block-header" data-headerColor={headerColor} data-collapsible={collapsible}>
         <div class="flex items-start justify-between w-full z-10">
             <div class="font-bold text-2xl flex items-center gap-1">
-                {
-                    collapsible == true && 
-                    (
-                        <button class="collapse-btn" aria-label="Toggle" data-default-collapsed={defCollapsed}>
-                            <Icon name="lucide:chevron-down" class="collapse-icon" />
-                        </button>
-                    )
-                }
+                {collapsible == true && (
+                    <button class="collapse-btn" aria-label="Toggle" data-default-collapsed={defCollapsed}>
+                        <Icon name="lucide:chevron-down" class="collapse-icon" />
+                    </button>
+                )}
                 <span>{title}</span>
             </div>
 
             <div class="flex items-center gap-2 link-icons">
                 {
                     links.map((item: any) => (
+                        item.submenu ? (
+                            <div class="submenu-wrap">
+                                <button class="submenu-trigger icon-link" data-tooltip={item.label} data-trigger-key={item.label}>
+                                    <Icon name={item.icon} class={headerColor != "blue" ? "text-tertiary" : "text-secondary"} />
+                                </button>
+                                <div class="submenu">
+                                    {item.submenu.map((sub: any) => (
+                                        <a href={sub.url} target="_blank" rel="noopener noreferrer" class="submenu-item">
+                                            <Icon name={sub.icon} class="submenu-item-icon" />
+                                            <span>{sub.label}</span>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
                         <a
                             href={item.url}
                             target="_blank"
@@ -35,8 +46,8 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
                                 class={headerColor != "blue" ? "text-tertiary" : "text-secondary"}
                             />
                         </a>
-                    ))
-                }
+                    )
+                ))}
             </div>
         </div>
     </div>
@@ -67,6 +78,56 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
                 const collapsed = content.classList.toggle("collapsed");
                 (icon as HTMLElement).style.transform = collapsed ? "rotate(-90deg)" : "rotate(0deg)";
             });
+        });
+
+        
+        const lockScroll = () => 
+            document.body.style.overflow = "hidden";
+        
+        const unlockScroll = () => 
+            document.body.style.overflow = "";
+
+        document.querySelectorAll(".submenu-trigger").forEach((trigger) => 
+        {
+            trigger.addEventListener("click", (e) => 
+            {
+                e.stopPropagation();
+        
+                const existing = document.querySelector(".submenu-portal");
+                const triggerExists = existing?.getAttribute("data-trigger") == (trigger as HTMLElement).dataset.triggerKey;
+        
+                existing?.remove();
+    
+                if (triggerExists) 
+                    return;
+        
+                const wrap = trigger.closest(".submenu-wrap") as HTMLElement;
+                const template = wrap?.querySelector(".submenu") as HTMLElement;
+                
+                if (!template) 
+                    return;
+                
+                const portal = template.cloneNode(true) as HTMLElement;
+                portal.classList.add("submenu-portal", "open");
+                portal.style.position = "fixed";
+                portal.setAttribute("data-trigger", (trigger as HTMLElement).dataset.triggerKey ?? "");
+        
+                const boundRect = trigger.getBoundingClientRect();
+                
+                // im dunno how to add a transition :3
+                portal.style.top = `${boundRect.bottom}px`;
+                portal.style.left = `${boundRect.right}px`;
+                portal.style.transform = "translateX(-100%)";
+        
+                document.body.appendChild(portal);
+                
+                lockScroll();
+            });
+        });
+        
+        document.addEventListener("click", () => {
+            document.querySelector(".submenu-portal")?.remove();
+            unlockScroll();
         });
     });
 </script>
@@ -156,19 +217,23 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
         padding: 0;
     }
 
-    .link-icons a {
+    .link-icons a,
+    .submenu-trigger {
         padding: 0.5rem;
         transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
         border-radius: 99px;
         position: relative;
+        cursor: pointer;
     }
 
-    .link-icons a:hover {
+    .link-icons a:hover,
+    .submenu-trigger:hover {
         box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.2);
         background-color: rgba(255, 255, 255, 0.15);
     }
-    
-    .link-icons a::after {
+
+    .link-icons a::after,
+    .submenu-trigger::after {
         content: attr(data-tooltip);
         position: absolute;
         bottom: 100%;
@@ -185,9 +250,54 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
         transition: opacity 0.3s;
         text-wrap: nowrap;
     }
-    
-    .link-icons a:hover::after{
+
+    .link-icons a:hover::after {
         opacity: 1;
     }
 
+    .submenu-trigger:hover::after {
+        opacity: 1;
+    }
+
+    .submenu-wrap {
+        position: relative;
+    }
+
+    .submenu {
+        display: none;
+    }
+
+    .submenu.open {
+        display: block;
+    }
+
+    .submenu-portal {
+        background-color: color-mix(in srgb, var(--bg-secondary), transparent 50%);
+        backdrop-filter: blur(10px) saturate(1.5);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-default);
+        box-shadow: 0 0 1rem 0.25rem rgba(0, 0, 0, 0.75);
+        z-index: 9999;
+    }
+
+    .submenu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        color: var(--text-primary);
+        border-radius: var(--radius-default);
+        font-size: 0.85rem;
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+    }
+
+    .submenu-item:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.25);
+    }
+
+    .submenu-item-icon {
+        color: var(--text-tertiary);
+        transform: translateY(-1px);
+    }
 </style>

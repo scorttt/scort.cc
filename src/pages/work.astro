@@ -118,50 +118,72 @@ const pageDesc = "work";
         </Project>
     </Block>
 
-    <Block title="Mirror's Edge Catalyst Mods" class="grid gap-4 md:grid-cols-2" headerColor="blue" collapsible={true}>
-        <span class="col-span-full">Requires <a href="https://github.com/CadeEvs/FrostyToolsuite/releases" target="_blank">Frosty Mod Manager</a></span>
-        <Project
-            title="No Naturally Spawning K-Sec" 
-            date="February 2018"
-            links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/93', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+    <Block title="Miscellaneous" class="grid gap-4 md:grid-cols-2" headerColor="blue" collapsible={true}>
+        <Project 
+            title="osu! Skin" 
+            date="2025" 
+            tags="Inkscape, Photoshop"
+            links={[
+                { url: '404', icon: 'lucide:download', label: 'Download (.osk)' }
+            ]}
         >
-            Removes enemy patrols in freeroam. Required mod for 'All Dashes No TP (ADNTP)' speedruns.
+            Edit of "(SK) Mathi DT" with a focus on maximizing tech readability and using osu!lazer's modern design philosophy.
         </Project>
-        <Project
-            title="Lighting Overhaul for Better Skies" 
-            date="August 2017"
-            links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/77', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+        <Project 
+            title="scort.cc v2" 
+            date="February 2026" 
+            tags="HTML, CSS, JavaScript, TypeScript, Tailwind, Astro"
         >
-            Drastically modifies world lighting, and allows moonlight to cast shadows.
+            Redesign of my personal website after being unhappy with the fact that I didn't really do much with the first website.
+            I want to treat this as a medium to showcase things I've made, and part of it was admittedly an excuse to learn Astro and JavaScript.
         </Project>
-        <Project
-            title="Takedowns in Freeroam" 
-            date="July 2017"
-            links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/44', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-        >
-            Allows takedown interactions in freeroam.
-        </Project>
-        <Project
-            title="Repaired Buildings" 
-            date="July 2017"
-            links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/63', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-        >
-            Repairs any story related buildings in freeroam if they're broken due to story progression.
-        </Project>
-        <Project
-            title="No Dirty Walls"
-            date="July 2017"
-            links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/54', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-        >
-            Removes dirty footprints, slide marks, dirt, and grime in the world.
-        </Project>
-        <Project
-            title="No CC on Knockout"
-            date="June 2017"
-            links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/42', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
-        >
-            Removes color correction flash on enemy knockouts.
-        </Project>
+        <div class="col-span-full">
+            <Block title="Mirror's Edge Catalyst Mods" class="grid gap-4 md:grid-cols-2" collapsible={true} defCollapsed={true}>
+                <span class="col-span-full">Requires <a href="https://github.com/CadeEvs/FrostyToolsuite/releases" target="_blank">Frosty Mod Manager</a></span>
+                <Project
+                    title="No Naturally Spawning K-Sec" 
+                    date="February 2018"
+                    links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/93', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+                >
+                    Removes enemy patrols in freeroam. Required mod for 'All Dashes No TP (ADNTP)' speedruns.
+                </Project>
+                <Project
+                    title="Lighting Overhaul for Better Skies" 
+                    date="August 2017"
+                    links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/77', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+                >
+                    Drastically modifies world lighting, and allows moonlight to cast shadows.
+                </Project>
+                <Project
+                    title="Takedowns in Freeroam" 
+                    date="July 2017"
+                    links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/44', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+                >
+                    Allows takedown interactions in freeroam.
+                </Project>
+                <Project
+                    title="Repaired Buildings" 
+                    date="July 2017"
+                    links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/63', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+                >
+                    Repairs any story related buildings in freeroam if they're broken due to story progression.
+                </Project>
+                <Project
+                    title="No Dirty Walls"
+                    date="July 2017"
+                    links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/54', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+                >
+                    Removes dirty footprints, slide marks, dirt, and grime in the world.
+                </Project>
+                <Project
+                    title="No CC on Knockout"
+                    date="June 2017"
+                    links={[{ url: 'https://www.nexusmods.com/mirrorsedgecatalyst/mods/42', icon: 'simple-icons:nexusmods', label: 'Nexus' }]}
+                >
+                    Removes color correction flash on enemy knockouts.
+                </Project>
+            </Block>
+        </div>
     </Block>
 
 </Base>
@@ -174,6 +196,11 @@ const pageDesc = "work";
     
     a:hover {
         text-decoration-line: underline;
+    }
+    
+    span {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
     }
     
     ul {

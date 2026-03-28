@@ -1,24 +1,25 @@
 ---
 import Block from "./Block.astro";
 import { Icon } from "astro-icon/components";
-const { title, date, links = [], image } = Astro.props;
+const { title, date, tags, links = [], image } = Astro.props;
 ---
 <Block title={title} links={links} class="p-0">
-    <div class="project-body px-4 pb-4">
+    <div class="project-body">
         {image && (
-            <div class="project-image-wrap pl-4">
+            <div class="project-image-wrap ml-4">
                 <a href={image} target="_blank" rel="noopener noreferrer">
                     <img src={image} alt={title} class="project-image" />
                 </a>
             </div>
         )}
-        <div class="project-date py-2">
+        <div class="project-date px-4 py-2">
             <Icon name="lucide:calendar" class="project-date-icon" />
             <span>{date}</span>
+            <div class="ml-auto text-xs">{tags}</div>
         </div>
-        <span class="project-desc pr-4 pb-4">
+        <span class="project-desc px-4 pb-4">
             <span class="desc-short"><slot /></span>
-            <span class="desc-full"><slot /> <button class="read-less-btn">read less</button></span>
+            <span class="desc-full"><slot /><button class="read-less-btn">read less</button></span>
         </span>
     </div>
 </Block>
@@ -141,7 +142,6 @@ const { title, date, links = [], image } = Astro.props;
 <style>
     .project-date {
         display: flex;
-        flex-direction: row;
         align-items: center;
         gap: 0.25rem;
         color: var(--text-tertiary);
@@ -151,7 +151,6 @@ const { title, date, links = [], image } = Astro.props;
         transform: translateY(-1px);
     }
     .project-body {
-        padding-left: 1rem;
         padding-right: 0;
         padding-bottom: 0;
     }
@@ -172,7 +171,6 @@ const { title, date, links = [], image } = Astro.props;
         display: block;
         font-size: 0.9rem;
         color: var(--text-secondary);
-        padding-bottom: 1rem;
     }
     .desc-full {
         display: none;
