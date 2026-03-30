@@ -19,7 +19,7 @@ const { title, date, tags, links = [], image } = Astro.props;
         </div>
         <span class="project-desc px-4 pb-4">
             <span class="desc-short"><slot /></span>
-            <span class="desc-full"><slot /><button class="read-less-btn">read less</button></span>
+            <span class="desc-full"><slot /></span>
         </span>
     </div>
 </Block>
@@ -28,59 +28,33 @@ const { title, date, tags, links = [], image } = Astro.props;
     // this entire script is written by ai i am not writing this shit myself this looks painful
     // im not even going to try to understand this and its probably really inefficient but i honestly dont care if it works
     document.addEventListener("astro:page-load", () => {
-        document.querySelectorAll(".project-desc").forEach((desc) => {
-            const short = desc.querySelector(".desc-short") as HTMLElement;
-            const full = desc.querySelector(".desc-full") as HTMLElement;
-            if (!short || !full) return;
-
-            const originalHTML = short.innerHTML;
-
-            // force block for measurement
-            short.style.display = "block";
-            const lineHeight = parseInt(getComputedStyle(short).lineHeight);
-            const maxHeight = lineHeight * 4;
-
-            if (short.scrollHeight <= maxHeight) { 
-                short.style.display = ""; 
-                return; 
-            }   
-
-            // binary search for truncation point
-            const text = short.textContent ?? "";
-            let lo = 0, hi = text.length;
-            while (lo < hi - 1) {
-                const mid = Math.floor((lo + hi) / 2);
-                short.textContent = text.slice(0, mid) + " … read more";
-                if (short.scrollHeight <= maxHeight) 
-                    lo = mid; 
-                else 
-                    hi = mid;
-            }
-
-            const applyTruncation = (limit: number) => {
-                const wordTrimmed = (text.slice(0, limit).trimEnd()).replace(/[,;:!?.]+$/, "");
-                short.innerHTML = originalHTML;
-                truncateTextNodes(short, wordTrimmed.length);
+        setTimeout(() => {
+            document.querySelectorAll(".project-desc").forEach((desc) => {
+                const short = desc.querySelector(".desc-short") as HTMLElement;
+                const full = desc.querySelector(".desc-full") as HTMLElement;
+                if (!short || !full) return;
+    
+                short.style.display = "block";
+                const renderedHeight = short.getBoundingClientRect().height;
+                const lineHeight = parseInt(getComputedStyle(short).lineHeight) || 24;
+                const maxHeight = lineHeight * 4;
+                
+                if (renderedHeight <= maxHeight + lineHeight) {
+                    short.style.display = "";
+                    return;
+                }
+    
+                short.style.display = "";
+                short.classList.add("truncated");
+    
                 const btn = document.createElement("button");
                 btn.className = "read-more-btn";
                 btn.textContent = "read more";
-                (findLastBlock(short) ?? short).append("… ", btn);
-                return btn;
-            };
-
-            let readMoreBtn = applyTruncation(lo);
-            short.style.display = "block"
-
-            while (short.scrollHeight > maxHeight && lo > 0) {
-                lo--;
-                readMoreBtn = applyTruncation(lo);
-            }
-
-            short.style.display = "";
-
-            readMoreBtn.addEventListener("click", () => syncRow(desc, true));
-        });
-
+                desc.appendChild(btn);
+    
+                btn.addEventListener("click", () => syncRow(desc, true));
+            });
+        }, 0);
         document.addEventListener("click", (e) => {
             const btn = (e.target as HTMLElement).closest(".read-less-btn");
             if (btn)
@@ -90,52 +64,76 @@ const { title, date, tags, links = [], image } = Astro.props;
 
     function syncRow(desc: Element, expand: boolean) {
         const outerGrid = desc.closest(".block-wrapper")?.closest(".block-content");
-        if (!outerGrid) return;
+        
+        if (!outerGrid) 
+            return;
+            
         const thisTop = (desc.closest(".block-wrapper") as HTMLElement)?.offsetTop ?? 0;
         outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
-            if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) return;
+            
+            if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) 
+                return;
+                
             wrapper.querySelectorAll(".project-desc").forEach((sib) => {
-                if (!sib.querySelector(".read-more-btn")) return;
-                sib.querySelector(".desc-short")?.classList.toggle("hidden", expand);
-                sib.querySelector(".desc-full")?.classList.toggle("visible", expand);
+                if (!sib.querySelector(".read-more-btn") && !sib.querySelector(".read-less-btn")) 
+                    return;
+    
+                const short = sib.querySelector(".desc-short") as HTMLElement;
+                const full = sib.querySelector(".desc-full") as HTMLElement;
+                const readMore = sib.querySelector(".read-more-btn") as HTMLElement;
+                const el = sib as HTMLElement;
+    
+                if (expand) {
+                    const fromHeight = el.scrollHeight;
+                    el.style.height = `${fromHeight}px`;
+    
+                    short?.classList.add("hidden");
+                    full?.classList.add("visible");
+                    readMore?.remove();
+    
+                    if (!sib.querySelector(".read-less-btn")) {
+                        const lessBtn = document.createElement("button");
+                        lessBtn.className = "read-less-btn";
+                        lessBtn.textContent = "read less";
+                        sib.appendChild(lessBtn);
+                    }
+    
+                    requestAnimationFrame(() => {
+                        el.style.height = `${el.scrollHeight}px`;
+                        el.addEventListener("transitionend", () => el.style.height = "", { once: true });
+                    });
+                } else {
+                    const fromHeight = el.getBoundingClientRect().height;
+                
+                    full?.classList.remove("visible");
+                    sib.querySelector(".read-less-btn")?.remove();
+                
+                    if (!sib.querySelector(".read-more-btn")) {
+                        const moreBtn = document.createElement("button");
+                        moreBtn.className = "read-more-btn";
+                        moreBtn.textContent = "read more";
+                        sib.appendChild(moreBtn);
+                        moreBtn.addEventListener("click", () => syncRow(sib, true));
+                    }
+                
+                    short?.classList.remove("hidden");
+                
+                    // measure the truncated height off-screen
+                    const clone = el.cloneNode(true) as HTMLElement;
+                    clone.style.cssText = "position:fixed;visibility:hidden;pointer-events:none;width:" + el.getBoundingClientRect().width + "px";
+                    document.body.appendChild(clone);
+                    const toHeight = clone.getBoundingClientRect().height;
+                    clone.remove();
+                
+                    el.style.height = `${fromHeight}px`;
+                
+                    requestAnimationFrame(() => requestAnimationFrame(() => {
+                        el.style.height = `${toHeight}px`;
+                        el.addEventListener("transitionend", () => el.style.height = "", { once: true });
+                    }));
+                }
             });
         });
-    }
-
-    function truncateTextNodes(node: Node, limit: number): number {
-        if (node.nodeType === Node.TEXT_NODE) {
-            const text = node.textContent ?? "";
-            if (limit <= 0) {
-                node.textContent = "";
-                return 0;
-            }
-            if (text.length <= limit)
-                return limit - text.length;
-            node.textContent = text.slice(0, limit).trimEnd();
-            return 0;
-        }
-        if (node.nodeType === Node.ELEMENT_NODE) {
-            const children = Array.from(node.childNodes);
-            for (const child of children) {
-                if (limit <= 0)
-                    (node as Element).removeChild(child);
-                else
-                    limit = truncateTextNodes(child, limit);
-            }
-        }
-        return limit;
-    }
-    
-    function findLastBlock(node: HTMLElement): HTMLElement | null {
-        const blockTags = new Set(["LI", "P", "DIV", "SPAN"]);
-        for (const child of Array.from(node.childNodes).reverse()) {
-            if (child.nodeType === Node.ELEMENT_NODE) {
-                const el = child as HTMLElement;
-                if (blockTags.has(el.tagName) && el.textContent?.trim())
-                    return findLastBlock(el) ?? el;
-            }
-        }
-        return null;
     }
 </script>
 
@@ -154,23 +152,38 @@ const { title, date, tags, links = [], image } = Astro.props;
         padding-right: 0;
         padding-bottom: 0;
     }
+    /* todo: better solution for image scaling since each image is definitely going to have a different aspect ratio */
     .project-image-wrap {
         position: relative;
         float: right;
-        width: 200px;
-        height: 130px;
+        width: 220px;
+        height: 152px;
         overflow: hidden;
     }
     .project-image {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: scale-down;
         border-radius: var(--radius-default);
     }
     .project-desc {
         display: block;
         font-size: 0.9rem;
         color: var(--text-secondary);
+        position: relative;
+        transition: height 0.5s cubic-bezier(0.5, 1, 0, 1);
+        overflow: hidden;
+    }
+    .desc-short {
+        display: block;
+    }
+    .desc-short.hidden {
+        display: none;
+    }
+    .desc-short.truncated {
+        max-height: calc(1em * 1.5 * 4);
+        overflow: hidden;
+        mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
     }
     .desc-full {
         display: none;
@@ -189,7 +202,7 @@ const { title, date, tags, links = [], image } = Astro.props;
         cursor: pointer;
         font-family: inherit;
         font-weight: bold;
-        display: inline;
+        display: block;
     }
     .read-more-btn:hover,
     .read-less-btn:hover {
