@@ -100,7 +100,6 @@ const { title, date, tags, links = [], image } = Astro.props;
     
                     requestAnimationFrame(() => {
                         el.style.height = `${el.scrollHeight}px`;
-                        el.addEventListener("transitionend", () => el.style.height = "", { once: true });
                     });
                 } else {
                     const fromHeight = el.getBoundingClientRect().height;
@@ -129,7 +128,6 @@ const { title, date, tags, links = [], image } = Astro.props;
                 
                     requestAnimationFrame(() => requestAnimationFrame(() => {
                         el.style.height = `${toHeight}px`;
-                        el.addEventListener("transitionend", () => el.style.height = "", { once: true });
                     }));
                 }
             });
@@ -156,14 +154,14 @@ const { title, date, tags, links = [], image } = Astro.props;
     .project-image-wrap {
         position: relative;
         float: right;
-        width: 220px;
-        height: 152px;
+        width: 200px;
+        height: 143px;
         overflow: hidden;
     }
     .project-image {
         width: 100%;
         height: 100%;
-        object-fit: scale-down;
+        object-fit: cover;
         border-radius: var(--radius-default);
     }
     .project-desc {
@@ -181,9 +179,9 @@ const { title, date, tags, links = [], image } = Astro.props;
         display: none;
     }
     .desc-short.truncated {
-        max-height: calc(1em * 1.5 * 3);
+        max-height: calc(1.5em * 3);
         overflow: hidden;
-        mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
     }
     .desc-full {
         display: none;
