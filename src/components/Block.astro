@@ -59,27 +59,29 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
 <script>
     document.addEventListener("astro:page-load", () => 
     {
-        document.querySelectorAll(".collapse-btn").forEach((button) => 
+        document.querySelectorAll(".block-header").forEach((header) =>
         {
+            const wrapper = header.closest(".block-wrapper");
+            const button = wrapper?.querySelector(".collapse-btn");
+            
+            if (!button)
+                return;
+        
+            const content = wrapper?.querySelector(".block-content");
             const icon = button.querySelector(".collapse-icon") as HTMLElement;
 
             if (button.getAttribute("data-default-collapsed") === "true" && icon)
                 icon.style.transform = "rotate(-90deg)";
 
-            button.addEventListener("click", () => 
+            header.addEventListener("click", () => 
             {
-                const wrapper = button.closest(".block-wrapper");
-                const content = wrapper?.querySelector(".block-content");
-                const icon = button.querySelector(".collapse-icon");
-                
-                if (!content || !icon) 
+                if (!content || !icon)
                     return;
                 
                 const collapsed = content.classList.toggle("collapsed");
-                (icon as HTMLElement).style.transform = collapsed ? "rotate(-90deg)" : "rotate(0deg)";
+                icon.style.transform = collapsed ? "rotate(-90deg)" : "rotate(0deg)";
             });
         });
-
         
         const lockScroll = () => 
             document.body.style.overflow = "hidden";
@@ -156,6 +158,11 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
         border-bottom: none;
     }
     
+    .block-header[data-collapsible="true"],
+    .collapse-btn {
+        cursor: pointer;
+    }
+    
     .block-content {
         padding: 1em;
         background-color: color-mix(in srgb, var(--bg-secondary), transparent 50%);
@@ -195,12 +202,6 @@ const { title, headerColor, collapsible = false, defCollapsed = false, links = [
 
     .collapse-icon {
         transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
-    }
-    
-    .collapse-icon:hover {
-        background-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.5);
-        border-radius: 99px;
     }
     
     .p-0 {
