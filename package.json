@@ -8,6 +8,9 @@
     "preview": "astro preview",
     "astro": "astro"
   },
+  "overrides": {
+    "vite": "^7"
+  },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.98",
     "@iconify-json/mingcute": "^1.2.7",
