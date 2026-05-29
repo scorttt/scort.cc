@@ -1,0 +1,277 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<div class="player-outer">
+    <div class="player-wrapper">
+        <div class="player-art-wrapper">
+            <img id="player-art" src="" alt="Album Art" />
+        </div>
+        <div class="player-info">
+            <div class="player-meta">
+                <div class="player-meta-top">
+                    <a id="status-lastfm-link" href="" target="_blank" rel="noopener noreferrer" class="player-status">
+                        <span class="player-status-text"></span>
+                        <Icon name="lucide:square-arrow-out-up-right" size="10" />
+                    </a> <!-- "Now Playing" if lanyard has music player info, otherwise use most recent last.fm info and show "Last Played" -->
+                    <a href={`https://www.last.fm/user/scort_/library`} target="_blank" rel="noopener noreferrer" class="lastfm-link">
+                        <Icon name="lucide:history" size="12" />
+                        <span>history</span>
+                    </a>
+                </div>
+                <span class="player-title"></span>
+                <span class="player-artist"></span>
+            </div>
+            <div class="player-progress-wrapper"> <!-- hidden if no music playing -->
+                <span id="time-elapsed" class="player-time">0:00</span>
+                <div class="player-bar-bg">
+                    <div class="player-bar"></div>
+                    <div class="player-seeker"></div>
+                </div>
+                <span id="total-duration" class="player-time">0:00</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("astro:page-load", () =>
+    {
+        const UID = "66056020786425856";
+        const LASTFM_URL = "https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=scort_&limit=1&format=json&api_key=faf2ed39dfc6b7683f7fa12952245142";
+        // api access is read only so hopefully not a problem?? pls dont rate limit me :(
+
+        const art = document.getElementById("player-art") as HTMLImageElement;
+        const title = document.querySelector(".player-title") as HTMLElement;
+        const artist = document.querySelector(".player-artist") as HTMLElement;
+        const status = document.querySelector(".player-status-text") as HTMLElement;
+        const statuslastFmLink = document.getElementById("status-lastfm-link") as HTMLAnchorElement;
+        const progress = document.querySelector(".player-progress-wrapper") as HTMLElement;
+        const bar = document.querySelector(".player-bar") as HTMLElement;
+        const elapsed = document.getElementById("time-elapsed") as HTMLElement;
+        const duration = document.getElementById("total-duration") as HTMLElement;
+
+        let progressInterval: ReturnType<typeof setInterval> | null = null;
+
+        const formattedTime = (second: number) => `${Math.floor(second / 60)}:${String(Math.floor(second % 60)).padStart(2, "0")}`;
+
+        function tickProgress(startUnix: number, endUnix: number) // independent from polling for more consistent time progression
+        {
+            const total = endUnix - startUnix;
+            const current = Math.min(Date.now() / 1000 - startUnix, total);
+
+            bar.style.width = `${(current / total) * 100}%`;
+            elapsed.textContent = formattedTime(current);
+            duration.textContent = formattedTime(total);
+        }
+
+        function setPlaying(spotify: any)
+        {
+            const startUnix = spotify.timestamps.start / 1000;
+            const endUnix = spotify.timestamps.end / 1000;
+
+            art.src = spotify.album_art_url;
+            art.style.display = "block";
+            title.textContent = spotify.song;
+            artist.textContent = spotify.artist;
+            status.textContent = "Now Playing";
+            statuslastFmLink.href = `https://www.last.fm/music/${encodeURIComponent(spotify.artist)}/_/${encodeURIComponent(spotify.song)}`;
+            progress.style.display = "flex";
+
+            if (progressInterval) 
+                clearInterval(progressInterval);
+            
+            tickProgress(startUnix, endUnix);
+            progressInterval = setInterval(() => 
+                                    tickProgress(startUnix, endUnix), 1000);
+        }
+
+        async function setRecent()
+        {
+            if (progressInterval) 
+                clearInterval(progressInterval);
+
+            status.textContent = "Last Played";
+            progress.style.display = "none";
+            bar.style.width = "0%";
+
+            try
+            {
+                const data = await fetch(LASTFM_URL).then(r => r.json());
+                const track = data?.recenttracks?.track?.[0];
+                if (!track) return;
+
+                title.textContent = track.name;
+                artist.textContent = track.artist?.["#text"] ?? "";
+
+                const image = track.image?.find((i: any) => i.size === "large")?.["#text"];
+                art.src = image ?? "";
+                art.style.display = image ? "block" : "none";
+                statuslastFmLink.href = track.url;
+            }
+            catch (error) 
+            {
+                console.error("Last.fm fetch failed:", error);
+            }
+        }
+
+        async function fetchLanyardData()
+        {
+            try
+            {
+                const response = await fetch(`https://api.lanyard.rest/v1/users/${UID}`);
+                if (response.ok)
+                {
+                    const lanyard = (await response.json()).data;
+                    lanyard.listening_to_spotify ? setPlaying(lanyard.spotify) : await setRecent();
+                }
+                else
+                {
+                    console.error("Lanyard API error:", response.status, response.statusText);
+                }
+            }
+            catch (error)
+            {
+                console.error("Lanyard fetch failed:", error);
+                await setRecent();
+            }
+        }
+
+        fetchLanyardData();
+        setInterval(fetchLanyardData, 1000);
+    });
+</script>
+
+<style>
+    .player-outer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .player-status {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+        letter-spacing: 0.14em;
+        color: var(--accent-blue);
+        transition: color 0.2s;
+    }
+
+    .player-status:hover {
+        color: var(--text-secondary);
+    }
+
+    .lastfm-link {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.7rem;
+        color: var(--text-tertiary);
+        transition: color 0.2s;
+    }
+
+    .lastfm-link:hover {
+        color: var(--text-secondary);
+    }
+
+    .player-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .player-art-wrapper {
+        flex-shrink: 0;
+        width: 96px;
+        height: 96px;
+        border-radius: var(--radius-default);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-tertiary);
+    }
+
+    .player-art-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+    }
+
+    .player-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.5rem;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .player-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+        min-width: 0;
+    }
+    
+    .player-meta-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .player-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-wrap: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text-primary);
+    }
+
+    .player-artist {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        overflow: hidden;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .player-progress-wrapper {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 0;
+    }
+
+    .player-time {
+        font-size: 0.7rem;
+        color: var(--text-tertiary);
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+    }
+
+    .player-bar-bg {
+        flex: 1;
+        height: 3px;
+        background-color: var(--bg-tertiary);
+        border-radius: 99px;
+        overflow: visible;
+        min-width: 0;
+        position: relative;
+    }
+
+    .player-bar {
+        height: 100%; /* why */
+        background-color: var(--accent-blue);
+    }
+</style>
