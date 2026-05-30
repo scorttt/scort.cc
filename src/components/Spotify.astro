@@ -51,7 +51,7 @@ import { Icon } from 'astro-icon/components';
         const elapsed = document.getElementById("time-elapsed") as HTMLElement;
         const duration = document.getElementById("total-duration") as HTMLElement;
 
-        let progressInterval: ReturnType<typeof setInterval> | null = null;
+        let progressInterval: ReturnType<typeof setInterval>;
 
         const formattedTime = (second: number) => `${Math.floor(second / 60)}:${String(Math.floor(second % 60)).padStart(2, "0")}`;
 
@@ -257,21 +257,19 @@ import { Icon } from 'astro-icon/components';
         font-size: 0.7rem;
         color: var(--text-tertiary);
         font-family: var(--font-code);
-        flex-shrink: 0;
     }
 
     .player-bar-bg {
         flex: 1;
-        height: 3px;
+        height: 6px;
         background-color: var(--bg-tertiary);
         border-radius: 99px;
-        overflow: visible;
-        min-width: 0;
         position: relative;
     }
 
     .player-bar {
         height: 100%; /* why */
+        border-radius: 99px;
         background-color: var(--accent-blue);
     }
 </style>
