@@ -1,9 +1,14 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
 <div class="flex flex-row gap-4 md:gap-8 profile-container">
     <div class="profile-pfp profile-pfp-placeholder" id="profile-avatar"></div>
     <div class="flex flex-col profile-text">
         <span class="text-xl md:text-2xl font-bold" id="profile-name">scort</span>
         <div class="text-xs md:text-sm" id="status-container">
             <span class="status-indicator" id="status-indicator" data-status="offline"></span>
+            <Icon name="lucide:gamepad-2" id="status-indicator-game" class="status-indicator-game" />
             <span id="status-text">offline</span>
         </div>
     </div>
@@ -12,11 +17,11 @@
 <script>
     document.addEventListener("astro:page-load", () => 
     {
-        // client side lanyard
         const UID = "66056020786425856";
         const avatarElement = document.getElementById('profile-avatar');
         const nameElement = document.getElementById('profile-name');
-        const statusIndicator = document.getElementById('status-indicator');
+        const statusIndicator = document.getElementById('status-indicator') as HTMLElement;
+        const statusIndicatorGame = document.getElementById('status-indicator-game') as HTMLElement;
         const statusText = document.getElementById('status-text');
     
         async function fetchLanyardData() 
@@ -26,8 +31,8 @@
                 const response = await fetch(`https://api.lanyard.rest/v1/users/${UID}`);
                 if (response.ok) 
                 {
-                    const toJson = await response.json();
-                    const lanyard = toJson.data;
+                    const lanyard = (await response.json()).data;
+    
                     if (lanyard.discord_user) 
                     {
                         const { id, avatar, global_name } = lanyard.discord_user;
@@ -40,22 +45,21 @@
                         }
                         
                         if (nameElement) 
-                        {
                             nameElement.textContent = global_name || 'scort';
-                        }
-                        
-                        if (statusIndicator && statusText) 
-                        {
-                            statusIndicator.setAttribute('data-status', lanyard.discord_status);
-                            statusText.textContent = lanyard.discord_status;
-                            
-                            // since im always appearing idle on discord
-                            // if (statusText.textContent == "idle") 
-                            // {
-                            //     statusText.textContent = "online";
-                            //     statusIndicator.setAttribute('data-status', 'online');
-                            // }
-                        }
+                    }
+    
+                    const game = lanyard.activities.find((a: any) => a.type === 0);
+    
+                    if (statusIndicator && statusIndicatorGame && statusText) 
+                    {
+                        statusIndicator.setAttribute('data-status', lanyard.discord_status);
+                        statusIndicator.style.display = game ? 'none' : 'inline-block';
+                        statusIndicatorGame.style.display = game ? 'inline-block' : 'none';
+                        statusIndicatorGame.setAttribute('data-status', lanyard.discord_status);
+                    
+                        const text = game ? `playing ${game.name}` : lanyard.discord_status;
+                        statusText.textContent = text.length > 30 ? text.slice(0, 30) + "…" : text;
+                        statusText.title = game ? game.name : lanyard.discord_status;
                     }
                 } 
                 else 
@@ -70,7 +74,7 @@
         }
     
         fetchLanyardData();
-        setInterval(fetchLanyardData, 120000);
+        setInterval(fetchLanyardData, 10000);
     })
 </script>
 
@@ -112,21 +116,59 @@
         height: 10px;
         border-radius: 50%;
         margin-right: 4px;
+        vertical-align: middle;
+        transform: translateY(-1px);
     }
-    .status-indicator[data-status="online"] {
+
+    .status-indicator-game {
+        display: none;
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+        vertical-align: middle;
+        transform: translateY(-1px);
+    }
+
+    .status-indicator[data-status="online"] 
+    { 
         background-color: rgba(69, 163, 102, 1);
         box-shadow: 0 0 8px rgba(69, 163, 102, 0.7);
     }
-    .status-indicator[data-status="idle"] {
+    .status-indicator[data-status="idle"] 
+    {
         background-color: rgba(255, 192, 78, 1);
         box-shadow: 0 0 8px rgba(255, 192, 78, 0.7);
     }
-    .status-indicator[data-status="dnd"] {
+    .status-indicator[data-status="dnd"] 
+    {
         background-color: rgba(218, 62, 68, 1);
         box-shadow: 0 0 8px rgba(218, 62, 68, 0.7);
     }
-    .status-indicator[data-status="offline"] {
+    .status-indicator[data-status="offline"] 
+    {
         background-color: rgba(133, 133, 133, 1);
         box-shadow: 0 0 8px rgba(133, 133, 133, 0.7);
+    }
+
+    /* probably a better way to do this, if i include it in the status-indicator class the background color from it would just be inherited and just put a colored square behind the controller icon */
+    .status-indicator-game[data-status="online"] 
+    {
+        color: rgba(69, 163, 102, 1);
+        filter: drop-shadow(0 0 4px rgba(69, 163, 102, 0.7));
+    }
+    .status-indicator-game[data-status="idle"] 
+    {
+        color: rgba(255, 192, 78, 1);
+        filter: drop-shadow(0 0 4px rgba(255, 192, 78, 0.7));
+    }
+    .status-indicator-game[data-status="dnd"] 
+    {
+        color: rgba(218, 62, 68, 1);
+        filter: drop-shadow(0 0 4px rgba(218, 62, 68, 0.7));
+    }
+    .status-indicator-game[data-status="offline"] 
+    {
+        color: rgba(133, 133, 133, 1);
+        filter: drop-shadow(0 0 4px rgba(133, 133, 133, 0.7));
     }
 </style>
