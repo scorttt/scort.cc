@@ -10,6 +10,7 @@ import { Icon } from 'astro-icon/components';
             <span class="status-indicator" id="status-indicator" data-status="offline"></span>
             <Icon name="lucide:gamepad-2" id="status-indicator-game" class="status-indicator-game" />
             <span id="status-text">offline</span>
+            <span id="game-elapsed" class="game-elapsed" style="display:none"></span>
         </div>
     </div>
 </div>
@@ -23,6 +24,10 @@ import { Icon } from 'astro-icon/components';
         const statusIndicator = document.getElementById('status-indicator');
         const statusIndicatorGame = document.getElementById('status-indicator-game');
         const statusText = document.getElementById('status-text');
+        
+        const gameElapsed = document.getElementById('game-elapsed') as HTMLElement;
+        let gameInterval: ReturnType<typeof setInterval> | null = null;
+        let currentGameStart: number | null = null;
     
         async function fetchLanyardData() 
         {
@@ -61,7 +66,43 @@ import { Icon } from 'astro-icon/components';
                         statusText.textContent = text.length > 30 ? text.slice(0, 30) + "…" : text;
                         statusText.title = game ? game.name : lanyard.discord_status;
                     }
-                } 
+
+                    if (game && game.timestamps && game.timestamps.start)
+                    {
+                        gameElapsed.style.display = 'block';
+
+                        if (game.timestamps.start !== currentGameStart)
+                        {
+                            currentGameStart = game.timestamps.start;
+                            
+                            if (gameInterval) 
+                                clearInterval(gameInterval);
+
+                            const tick = () => 
+                            {
+                                const elapsed = Math.floor((Date.now() - game.timestamps.start) / 1000);
+                                const hour = Math.floor(elapsed / 3600);
+                                const minute = Math.floor((elapsed % 3600) / 60);
+                                const second = elapsed % 60;
+                                gameElapsed.textContent = hour > 0
+                                    ? `${hour}:${String(minute).padStart(2, "0")}:${String(second).padStart(2, "0")}`
+                                    : `${minute}:${String(second).padStart(2, "0")}`;
+                            };
+                            tick();
+                            gameInterval = setInterval(tick, 1000);
+                        }
+                    }
+                    else
+                    {
+                        gameElapsed.style.display = 'none';
+                        if (gameInterval) 
+                        { 
+                            clearInterval(gameInterval);
+                            gameInterval = null;
+                        }
+                        currentGameStart = null;
+                    }
+                }
                 else 
                 {
                     console.error('Lanyard API error:', response.status, response.statusText);
@@ -120,58 +161,54 @@ import { Icon } from 'astro-icon/components';
         height: 10px;
         border-radius: 50%;
         margin-right: 4px;
-        vertical-align: middle;
-        transform: translateY(-1px);
+        transform: translateY(1px);
     }
 
     .status-indicator-game {
         display: none;
         width: 16px;
         height: 16px;
-        margin-right: 4px;
+        margin-right: 2px;
         vertical-align: middle;
-        transform: translateY(-1px);
     }
 
-    .status-indicator[data-status="online"] 
-    { 
+    .game-elapsed {
+        font-size: 0.7rem;
+        color: var(--text-tertiary);
+        font-family: var(--font-code);
+    }
+
+    .status-indicator[data-status="online"] { 
         background-color: rgba(69, 163, 102, 1);
         box-shadow: 0 0 8px rgba(69, 163, 102, 0.7);
     }
-    .status-indicator[data-status="idle"] 
-    {
+    .status-indicator[data-status="idle"] {
         background-color: rgba(255, 192, 78, 1);
         box-shadow: 0 0 8px rgba(255, 192, 78, 0.7);
     }
-    .status-indicator[data-status="dnd"] 
-    {
+    .status-indicator[data-status="dnd"] {
         background-color: rgba(218, 62, 68, 1);
         box-shadow: 0 0 8px rgba(218, 62, 68, 0.7);
     }
-    .status-indicator[data-status="offline"] 
-    {
+    .status-indicator[data-status="offline"] {
         background-color: rgba(133, 133, 133, 1);
         box-shadow: 0 0 8px rgba(133, 133, 133, 0.7);
     }
 
     /* probably a better way to do this, if i include it in the status-indicator class the background color from it would just be inherited and just put a colored square behind the controller icon */
-    .status-indicator-game[data-status="online"] 
-    {
+    .status-indicator-game[data-status="online"] {
         color: rgba(69, 163, 102, 1);
         filter: drop-shadow(0 0 4px rgba(69, 163, 102, 0.7));
     }
-    .status-indicator-game[data-status="idle"] 
-    {
+    .status-indicator-game[data-status="idle"] {
         color: rgba(255, 192, 78, 1);
         filter: drop-shadow(0 0 4px rgba(255, 192, 78, 0.7));
     }
-    .status-indicator-game[data-status="dnd"] 
-    {
+    .status-indicator-game[data-status="dnd"] {
         color: rgba(218, 62, 68, 1);
         filter: drop-shadow(0 0 4px rgba(218, 62, 68, 0.7));
     }
-    .status-indicator-game[data-status="offline"] 
-    {
+    .status-indicator-game[data-status="offline"] {
         color: rgba(133, 133, 133, 1);
         filter: drop-shadow(0 0 4px rgba(133, 133, 133, 0.7));
     }
