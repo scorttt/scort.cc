@@ -73,7 +73,7 @@ import { Icon } from 'astro-icon/components';
             art.src = spotify.album_art_url;
             art.style.display = "block";
             title.textContent = spotify.song;
-            artist.textContent = spotify.artist;
+            artist.textContent = spotify.artist.replaceAll("; ", ", "); // hack fix to replace semicolons with commas for multi artists
             status.textContent = "Now Playing";
             statuslastFmLink.href = `https://www.last.fm/music/${encodeURIComponent(spotify.artist)}/_/${encodeURIComponent(spotify.song)}`;
             progress.style.display = "flex";
