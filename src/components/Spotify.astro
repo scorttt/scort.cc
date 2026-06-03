@@ -51,7 +51,8 @@ import { Icon } from 'astro-icon/components';
         const elapsed = document.getElementById("time-elapsed") as HTMLElement;
         const duration = document.getElementById("total-duration") as HTMLElement;
 
-        let progressInterval: ReturnType<typeof setInterval>;
+        let progressInterval: ReturnType<typeof setInterval> | null = null;
+        let songEnded = false;
 
         const formattedTime = (second: number) => `${Math.floor(second / 60)}:${String(Math.floor(second % 60)).padStart(2, "0")}`;
 
@@ -63,13 +64,26 @@ import { Icon } from 'astro-icon/components';
             bar.style.width = `${(current / total) * 100}%`;
             elapsed.textContent = formattedTime(current);
             duration.textContent = formattedTime(total);
-        }
+        
+            if (current >= total && !songEnded)
+            {
+                songEnded = true;
 
+                if (progressInterval) 
+                { 
+                    clearInterval(progressInterval);
+                    progressInterval = null;
+                }
+
+                fetchLanyardData();
+            }
+        }
         function setPlaying(spotify: any)
         {
             const startUnix = spotify.timestamps.start / 1000;
             const endUnix = spotify.timestamps.end / 1000;
 
+            songEnded = false;
             art.src = spotify.album_art_url;
             art.style.display = "block";
             title.textContent = spotify.song;
@@ -138,7 +152,7 @@ import { Icon } from 'astro-icon/components';
         }
 
         fetchLanyardData();
-        setInterval(fetchLanyardData, 10000);
+        setInterval(fetchLanyardData, 20000);
     });
 </script>
 
