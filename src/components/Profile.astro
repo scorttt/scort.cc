@@ -61,10 +61,12 @@ import { Icon } from 'astro-icon/components';
                         statusIndicator.style.display = game ? 'none' : 'inline-block';
                         statusIndicatorGame.style.display = game ? 'inline-block' : 'none';
                         statusIndicatorGame.setAttribute('data-status', lanyard.discord_status);
-                    
+
                         const text = game ? `playing ${game.name}` : lanyard.discord_status;
-                        statusText.textContent = text.length > 30 ? text.slice(0, 30) + "…" : text;
-                        statusText.title = game ? game.name : lanyard.discord_status;
+                        const maxTextLength = 30;
+    
+                        statusText.textContent = text.length > maxTextLength ? text.slice(0, maxTextLength) + "…" : text;
+                        statusText.title = text.length > maxTextLength ? (game ? game.name : lanyard.discord_status) : "";
                     }
 
                     if (game && game.timestamps && game.timestamps.start)
