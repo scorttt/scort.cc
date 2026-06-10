@@ -44,7 +44,8 @@ import { Icon } from 'astro-icon/components';
         const art = document.getElementById("player-art") as HTMLImageElement;
         const title = document.querySelector(".player-title") as HTMLElement;
         const artist = document.querySelector(".player-artist") as HTMLElement;
-        const status = document.querySelector(".player-status-text") as HTMLElement;
+        const status = document.querySelector(".player-status") as HTMLElement;
+        const statusText = document.querySelector(".player-status-text") as HTMLElement;
         const statuslastFmLink = document.getElementById("status-lastfm-link") as HTMLAnchorElement;
         const progress = document.querySelector(".player-progress-wrapper") as HTMLElement;
         const bar = document.querySelector(".player-bar") as HTMLElement;
@@ -84,11 +85,12 @@ import { Icon } from 'astro-icon/components';
             const endUnix = spotify.timestamps.end / 1000;
 
             songEnded = false;
+            status.classList.remove("inactive");
             art.src = spotify.album_art_url;
             art.style.display = "block";
             title.textContent = spotify.song;
             artist.textContent = spotify.artist.replaceAll("; ", ", "); // hack fix to replace semicolons with commas for multi artists
-            status.textContent = "Now Playing";
+            statusText.textContent = "Now Playing";
             statuslastFmLink.href = `https://www.last.fm/music/${encodeURIComponent(spotify.artist)}/_/${encodeURIComponent(spotify.song)}`;
             progress.style.display = "flex";
 
@@ -105,7 +107,9 @@ import { Icon } from 'astro-icon/components';
             if (progressInterval) 
                 clearInterval(progressInterval);
 
-            status.textContent = "Last Played";
+            status.classList.add("inactive");
+            
+            statusText.textContent = "Last Played";
             progress.style.display = "none";
             bar.style.width = "0%";
 
@@ -180,6 +184,14 @@ import { Icon } from 'astro-icon/components';
     }
 
     .player-status:hover {
+        color: var(--text-secondary);
+    }
+
+    .player-status.inactive {
+        color: var(--text-tertiary);
+    }
+    
+    .player-status.inactive:hover {
         color: var(--text-secondary);
     }
 
