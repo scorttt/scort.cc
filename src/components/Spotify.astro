@@ -5,7 +5,8 @@ import { Icon } from 'astro-icon/components';
 <div class="player-outer">
     <div class="player-wrapper">
         <div class="player-art-wrapper">
-            <img id="player-art" src="" alt="Album Art" />
+            <img id="player-art" />
+            <Icon name="lucide:circle-question-mark" class="player-art-placeholder" />
         </div>
         <div class="player-info">
             <div class="player-meta">
@@ -56,6 +57,8 @@ import { Icon } from 'astro-icon/components';
         let songEnded = false;
 
         const formattedTime = (second: number) => `${Math.floor(second / 60)}:${String(Math.floor(second % 60)).padStart(2, "0")}`;
+
+        art.addEventListener("error", () => art.style.display = "none"); // hide stupid torn page when album art fails to load
 
         function tickProgress(startUnix: number, endUnix: number) // independent from polling for more consistent time progression
         {
@@ -217,6 +220,7 @@ import { Icon } from 'astro-icon/components';
     }
 
     .player-art-wrapper {
+        position: relative;
         flex-shrink: 0;
         width: 96px;
         height: 96px;
@@ -227,10 +231,21 @@ import { Icon } from 'astro-icon/components';
     }
 
     .player-art-wrapper img {
+        display: none;
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: none;
+    }
+
+    .player-art-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-tertiary);
+        width: 32px;
+        height: 32px;
     }
 
     .player-info {
