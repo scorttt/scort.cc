@@ -9,6 +9,7 @@ import SocialButton from '../components/SocialButton.astro';
 import Intro from '../components/Intro.astro';
 
 // socials
+const twitter = "https://twitter.com/scorttt_";
 const bsky = "https://bsky.app/profile/scort.cc";
 const discord = "https://discord.com/users/66056020786425856";
 const steam = "https://steamcommunity.com/id/scort_/";
@@ -46,6 +47,13 @@ const email = "mailto:me@scort.cc";
             color="#8b2bff"
         />
         <SocialButton 
+            icon="simple-icons:twitter" 
+            name="Twitter" 
+            user="scorttt_"
+            url={twitter}
+            color="#00a7e7"
+        />
+        <SocialButton 
             icon="simple-icons:bluesky" 
             name="Bluesky" 
             user="@scort.cc"
@@ -80,13 +88,13 @@ const email = "mailto:me@scort.cc";
             url={discord}
             color="#5865F2"
         />
-        <SocialButton 
+        <!-- <SocialButton 
             icon="lucide:mail" 
             name="Email" 
             user="me@scort.cc"
             url={email}
             color="#000000"
-        />
+        /> -->
     </div>
     
     <!-- <Block title="new stuff" headerColor="blue" collapsible={true}>
