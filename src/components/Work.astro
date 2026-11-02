@@ -3,136 +3,249 @@ import Block from "./Block.astro";
 import { Icon } from "astro-icon/components";
 const { title, date, tags, links = [], image } = Astro.props;
 ---
-<Block title={title} links={links} class="p-0">
-    <div class="project-body">
-        {image && (
-            <div class="project-image-wrap ml-4">
-                <a href={image} target="_blank" rel="noopener noreferrer">
-                    <img src={image} alt={title} class="project-image" />
-                </a>
+<div class="project">
+    <Block title={title} class="p-0">
+        <div class="project-body">
+            {image && (
+                <div class="project-image-wrap ml-4">
+                    <a href={image} target="_blank" rel="noopener noreferrer">
+                        <img src={image} alt={title} class="project-image" />
+                    </a>
+                </div>
+            )}
+            <div class="project-date px-4 py-2">
+                <Icon name="lucide:calendar" class="project-date-icon" />
+                <span>{date}</span>
+                <div class="ml-auto text-xs">{tags}</div>
+            </div>
+            <div class="project-desc px-4 pb-4">
+                <div class="desc-text"><slot /></div>
+                <button class="read-more-btn" hidden>read more</button>
+            </div>
+        </div>
+
+        {links.length > 0 && (
+            <div class="project-links">
+                {links.map((item: any) => (
+                    item.submenu ? (
+                        <div class="submenu-wrap">
+                            <button class="project-link submenu-trigger" aria-haspopup="menu" aria-expanded="false">
+                                <Icon name={item.icon} class="project-link-icon" />
+                                <span>{item.label}</span>
+                                <Icon name="lucide:chevron-down" class="project-link-icon" />
+                            </button>
+                            <div class="submenu">
+                                {item.submenu.map((sub: any) => (
+                                    <a href={sub.url} target="_blank" rel="noopener noreferrer" class="submenu-item">
+                                        <Icon name={sub.icon} class="submenu-item-icon" />
+                                        <span>{sub.label}</span>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <a href={item.url} target="_blank" rel="noopener noreferrer" class="project-link">
+                            <Icon name={item.icon} class="project-link-icon" />
+                            <span>{item.label}</span>
+                        </a>
+                    )
+                ))}
             </div>
         )}
-        <div class="project-date px-4 py-2">
-            <Icon name="lucide:calendar" class="project-date-icon" />
-            <span>{date}</span>
-            <div class="ml-auto text-xs">{tags}</div>
-        </div>
-        <span class="project-desc px-4 pb-4">
-            <span class="desc-short"><slot /></span>
-            <span class="desc-full"><slot /></span>
-        </span>
-    </div>
-</Block>
+    </Block>
+</div>
 
 <script>
-    // this entire script is written by ai i am not writing this shit myself this looks painful
-    // im not even going to try to understand this and its probably really inefficient but i honestly dont care if it works
-    document.addEventListener("astro:page-load", () => {
-        setTimeout(() => {
-            document.querySelectorAll(".project-desc").forEach((desc) => {
-                const short = desc.querySelector(".desc-short") as HTMLElement;
-                const full = desc.querySelector(".desc-full") as HTMLElement;
-                if (!short || !full) return;
-    
-                short.style.display = "block";
-                const renderedHeight = short.getBoundingClientRect().height;
-                const lineHeight = parseInt(getComputedStyle(short).lineHeight) || 24;
-                const maxHeight = lineHeight * 3;
-                
-                if (renderedHeight <= maxHeight + lineHeight) {
-                    short.style.display = "";
-                    return;
-                }
-    
-                short.style.display = "";
-                short.classList.add("truncated");
-    
-                const btn = document.createElement("button");
-                btn.className = "read-more-btn";
-                btn.textContent = "read more";
-                desc.appendChild(btn);
-    
-                btn.addEventListener("click", () => syncRow(desc, true));
-            });
-        }, 0);
-        document.addEventListener("click", (e) => {
-            const btn = (e.target as HTMLElement).closest(".read-less-btn");
-            if (btn)
-                syncRow(btn.closest(".project-desc") as HTMLElement, false);
+    function layoutColumns(container: HTMLElement)
+    {
+        const count = getComputedStyle(container).gridTemplateColumns.split(" ").length;
+
+        if (container.dataset.columns === String(count))
+            return;
+
+        container.dataset.columns = String(count);
+
+        // undo the previous layout back to original order
+        container.querySelectorAll<HTMLElement>(":scope > .project-columns").forEach((group) =>
+        {
+            const projects = [...group.querySelectorAll<HTMLElement>(":scope > .project-column > .project")];
+            projects.sort((a, b) => Number(a.dataset.order) - Number(b.dataset.order));
+            group.replaceWith(...projects);
         });
+
+        let run: HTMLElement[] = [];
+
+        const flush = () =>
+        {
+            if (run.length == 0)
+                return;
+
+            const group = document.createElement("div");
+            group.className = "project-columns";
+            run[0].before(group);
+
+            const columns = Array.from({ length: count }, () =>
+            {
+                const column = document.createElement("div");
+                column.className = "project-column";
+                group.appendChild(column);
+                return column;
+            });
+
+            // each project goes into whichever column is currently shortest
+            for (const project of run)
+            {
+                const shortest = columns.reduce((a, b) => b.offsetHeight < a.offsetHeight ? b : a);
+                shortest.appendChild(project);
+            }
+
+            run = [];
+        };
+
+        for (const child of [...container.children] as HTMLElement[])
+        {
+            if (child.classList.contains("project"))
+                run.push(child);
+            else if (getComputedStyle(child).display != "none")
+                flush();
+        }
+
+        flush();
+    }
+
+    function layoutAll()
+    {
+        document.querySelectorAll<HTMLElement>("[data-project-grid]").forEach(layoutColumns);
+    }
+
+    // animates el's height (and the fade along with it) between whatever it is now and whatever it is after change() runs
+    function animateHeight(el: HTMLElement, change: () => void)
+    {
+        const from = el.getBoundingClientRect().height;
+        const fromFade = getComputedStyle(el).getPropertyValue("--fade");
+
+        // transitions are off when measuring, otherwise the end height starts animating and the real animation has nowhere to go
+        el.style.transition = "none";
+        change();
+        el.style.height = "";
+        const to = el.getBoundingClientRect().height;
+
+        el.style.height = `${from}px`;
+        el.style.setProperty("--fade", fromFade);
+        el.getBoundingClientRect();
+
+        el.style.transition = "";
+        el.style.height = `${to}px`;
+        el.style.removeProperty("--fade");
+    }
+
+    function toggleDesc(button: HTMLElement)
+    {
+        const text = button.closest(".project-desc")?.querySelector<HTMLElement>(".desc-text");
+
+        if (!text)
+            return;
+
+        const expand = !text.classList.contains("expanded");
+        animateHeight(text, () => text.classList.toggle("expanded", expand));
+        button.textContent = expand ? "read less" : "read more";
+    }
+
+    let openTrigger: HTMLElement | null = null;
+
+    function closeSubmenu()
+    {
+        document.querySelector(".submenu-portal")?.remove();
+        openTrigger?.setAttribute("aria-expanded", "false");
+        openTrigger = null;
+        document.body.style.overflow = "";
+    }
+
+    function openSubmenu(trigger: HTMLElement)
+    {
+        const template = trigger.closest(".submenu-wrap")?.querySelector<HTMLElement>(".submenu");
+
+        if (!template)
+            return;
+
+        const portal = template.cloneNode(true) as HTMLElement;
+        portal.classList.add("submenu-portal");
+        document.body.appendChild(portal);
+
+        // open below the button, or above it if there isn't room, and keep it on screen horizontally
+        const button = trigger.getBoundingClientRect();
+        const menu = portal.getBoundingClientRect();
+        const margin = 8;
+
+        const fitsBelow = button.bottom + menu.height + margin <= window.innerHeight;
+        portal.style.top = `${fitsBelow ? button.bottom + 4 : button.top - menu.height - 4}px`;
+        portal.style.left = `${Math.max(margin, Math.min(button.left, window.innerWidth - menu.width - margin))}px`;
+
+        openTrigger = trigger;
+        trigger.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+    }
+
+    document.addEventListener("click", (e) =>
+    {
+        const target = e.target as HTMLElement;
+
+        const readMore = target.closest<HTMLElement>(".read-more-btn");
+        if (readMore)
+        {
+            toggleDesc(readMore);
+            return;
+        }
+
+        const trigger = target.closest<HTMLElement>(".submenu-trigger");
+        const wasOpen = trigger != null && trigger === openTrigger;
+
+        closeSubmenu();
+
+        if (trigger && !wasOpen)
+            openSubmenu(trigger);
     });
 
-    function syncRow(desc: Element, expand: boolean) {
-        const outerGrid = desc.closest(".block-wrapper")?.closest(".block-content");
-        
-        if (!outerGrid) 
-            return;
-            
-        const thisTop = (desc.closest(".block-wrapper") as HTMLElement)?.offsetTop ?? 0;
-        outerGrid.querySelectorAll(".block-wrapper").forEach((wrapper) => {
-            
-            if (Math.abs((wrapper as HTMLElement).offsetTop - thisTop) > 10) 
+    document.addEventListener("keydown", (e) =>
+    {
+        if (e.key == "Escape")
+            closeSubmenu();
+    });
+
+    document.addEventListener("astro:before-swap", closeSubmenu);
+    window.addEventListener("resize", layoutAll);
+
+    document.addEventListener("astro:page-load", () =>
+    {
+        document.querySelectorAll<HTMLElement>(".desc-text").forEach((text) =>
+        {
+            const lineHeight = parseFloat(getComputedStyle(text).lineHeight);
+
+            if (text.scrollHeight <= lineHeight * 4)
                 return;
-                
-            wrapper.querySelectorAll(".project-desc").forEach((sib) => {
-                if (!sib.querySelector(".read-more-btn") && !sib.querySelector(".read-less-btn")) 
-                    return;
-    
-                const short = sib.querySelector(".desc-short") as HTMLElement;
-                const full = sib.querySelector(".desc-full") as HTMLElement;
-                const readMore = sib.querySelector(".read-more-btn") as HTMLElement;
-                const el = sib as HTMLElement;
-    
-                if (expand) {
-                    const fromHeight = el.scrollHeight;
-                    el.style.height = `${fromHeight}px`;
-    
-                    short?.classList.add("hidden");
-                    full?.classList.add("visible");
-                    readMore?.remove();
-    
-                    if (!sib.querySelector(".read-less-btn")) {
-                        const lessBtn = document.createElement("button");
-                        lessBtn.className = "read-less-btn";
-                        lessBtn.textContent = "read less";
-                        sib.appendChild(lessBtn);
-                    }
-    
-                    requestAnimationFrame(() => {
-                        el.style.height = `${el.scrollHeight}px`;
-                    });
-                } else {
-                    const fromHeight = el.getBoundingClientRect().height;
-                
-                    full?.classList.remove("visible");
-                    sib.querySelector(".read-less-btn")?.remove();
-                
-                    if (!sib.querySelector(".read-more-btn")) {
-                        const moreBtn = document.createElement("button");
-                        moreBtn.className = "read-more-btn";
-                        moreBtn.textContent = "read more";
-                        sib.appendChild(moreBtn);
-                        moreBtn.addEventListener("click", () => syncRow(sib, true));
-                    }
-                
-                    short?.classList.remove("hidden");
-                
-                    // measure the truncated height off-screen
-                    const clone = el.cloneNode(true) as HTMLElement;
-                    clone.style.cssText = "position:fixed;visibility:hidden;pointer-events:none;width:" + el.getBoundingClientRect().width + "px";
-                    document.body.appendChild(clone);
-                    const toHeight = clone.getBoundingClientRect().height;
-                    clone.remove();
-                
-                    el.style.height = `${fromHeight}px`;
-                
-                    requestAnimationFrame(() => requestAnimationFrame(() => {
-                        el.style.height = `${toHeight}px`;
-                    }));
-                }
+
+            text.classList.add("truncated");
+            text.parentElement?.querySelector(".read-more-btn")?.removeAttribute("hidden");
+            text.addEventListener("transitionend", (e) =>
+            {
+                if (e.target == text && e.propertyName == "height")
+                    text.style.height = "";
             });
         });
-    }
+
+        document.querySelectorAll<HTMLElement>(".project").forEach((project) =>
+        {
+            const container = project.parentElement;
+
+            if (!container || container.hasAttribute("data-project-grid"))
+                return;
+
+            container.setAttribute("data-project-grid", "");
+            container.querySelectorAll<HTMLElement>(":scope > .project").forEach((p, i) => p.dataset.order = String(i));
+        });
+
+        layoutAll();
+    });
 </script>
 
 <style>
@@ -168,42 +281,117 @@ const { title, date, tags, links = [], image } = Astro.props;
         display: block;
         font-size: 0.9rem;
         color: var(--text-secondary);
-        position: relative;
-        transition: height 0.5s cubic-bezier(0.5, 1, 0, 1);
-        overflow: hidden;
     }
-    .desc-short {
-        display: block;
+    /* how strong the fade at the bottom is, 1 when collapsed and 0 when expanded */
+    @property --fade {
+        syntax: "<number>";
+        inherits: false;
+        initial-value: 1;
     }
-    .desc-short.hidden {
-        display: none;
-    }
-    .desc-short.truncated {
-        max-height: calc(1.5em * 3);
-        overflow: hidden;
-        mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-    }
-    .desc-full {
-        display: none;
-        align-items: center;
-    }
-    .desc-full.visible {
-        display: inline;
-    }
-</style>
 
-<style is:global>
-    .read-more-btn,
-    .read-less-btn {
+    .desc-text {
+        line-height: 1.5;
+        transition-property: height, --fade;
+        transition-duration: 0.5s;
+        transition-timing-function: cubic-bezier(0.5, 1, 0, 1);
+    }
+    .desc-text.truncated {
+        height: calc(1.5em * 3);
+        overflow: hidden;
+        --fade: 1;
+        mask-image: linear-gradient(to bottom, black 60%, rgb(0 0 0 / calc(1 - var(--fade))) 100%);
+    }
+    .desc-text.truncated.expanded {
+        height: auto;
+        --fade: 0;
+    }
+
+    .read-more-btn {
         color: var(--accent-blue);
         font-size: 0.9rem;
         cursor: pointer;
         font-family: inherit;
         font-weight: bold;
-        display: block;
     }
-    .read-more-btn:hover,
-    .read-less-btn:hover {
+    .read-more-btn:hover {
         text-decoration: underline;
+    }
+
+    .project-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        padding: 0.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+    .project-link {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.5rem;
+        border-radius: 99px;
+        color: var(--text-tertiary);
+        font-size: 0.85rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+    }
+    .project-link:hover,
+    .project-link[aria-expanded="true"] {
+        color: var(--text-primary);
+        background-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.1);
+    }
+    .project-link-icon {
+        flex-shrink: 0;
+        transform: translateY(-1px);
+    }
+
+    .submenu {
+        display: none;
+    }
+    .submenu.submenu-portal {
+        display: block;
+        position: fixed;
+        background-color: color-mix(in srgb, var(--bg-secondary), transparent 50%);
+        backdrop-filter: blur(10px) saturate(1.5);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-default);
+        box-shadow: 0 0 1rem 0.25rem rgba(0, 0, 0, 0.75);
+        z-index: 9999;
+    }
+    .submenu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        color: var(--text-primary);
+        border-radius: var(--radius-default);
+        font-size: 0.85rem;
+        transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
+    }
+    .submenu-item:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0rem 0rem 1rem 0.5rem rgba(255, 255, 255, 0.25);
+    }
+    .submenu-item-icon {
+        color: var(--text-tertiary);
+        transform: translateY(-1px);
+    }
+</style>
+
+<style is:global>
+    .project-columns {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .project-column {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 </style>
