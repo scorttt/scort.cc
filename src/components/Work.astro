@@ -16,7 +16,7 @@ const { title, date, tags, links = [], image } = Astro.props;
             <div class="project-date px-4 py-2">
                 <Icon name="lucide:calendar" class="project-date-icon" />
                 <span>{date}</span>
-                <div class="ml-auto text-xs">{tags}</div>
+                <div class="ml-auto text-sm">{tags}</div>
             </div>
             <div class="project-desc px-4 pb-4">
                 <div class="desc-text"><slot /></div>
@@ -331,7 +331,7 @@ const { title, date, tags, links = [], image } = Astro.props;
         padding: 0.35rem 0.5rem;
         border-radius: 99px;
         color: var(--text-tertiary);
-        font-size: 0.85rem;
+        font-size: 0.875rem;
         font-weight: bold;
         cursor: pointer;
         transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
@@ -365,9 +365,12 @@ const { title, date, tags, links = [], image } = Astro.props;
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 0.75rem;
-        color: var(--text-primary);
-        border-radius: var(--radius-default);
-        font-size: 0.85rem;
+        color: var(--text-secondary);
+        border-radius: calc(var(--radius-default) - 0.25rem);
+        font-size: 0.875rem;
+        font-weight: bold;
+        white-space: nowrap;
+        outline: none;
         transition: all 0.5s cubic-bezier(0.5, 1, 0, 1);
     }
     .submenu-item:hover {

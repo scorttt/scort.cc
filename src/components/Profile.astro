@@ -6,7 +6,7 @@ import { Icon } from 'astro-icon/components';
     <div class="profile-pfp profile-pfp-placeholder" id="profile-avatar"></div>
     <div class="flex flex-col profile-text">
         <span class="text-xl md:text-2xl font-bold" id="profile-name">scort</span>
-        <div class="text-xs md:text-sm" id="status-container">
+        <div class="text-sm" id="status-container">
             <span class="status-indicator" id="status-indicator" data-status="offline"></span>
             <Icon name="lucide:gamepad-2" id="status-indicator-game" class="status-indicator-game" />
             <span id="status-text">offline</span>
@@ -183,7 +183,7 @@ import { Icon } from 'astro-icon/components';
     }
 
     .game-elapsed {
-        font-size: 0.7rem;
+        font-size: 0.875rem;
         color: var(--text-tertiary);
         font-family: var(--font-code);
     }
