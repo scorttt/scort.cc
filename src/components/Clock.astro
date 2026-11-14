@@ -7,47 +7,97 @@ import { Icon } from 'astro-icon/components';
             <Icon name="lucide:clock" class="clock-icon text" />
             <span class="clock-time text" id="clock-time">00:00:00</span>
         </div>
-        <span class="clock-timezone" id="clock-timezone">PST <span id="clock-timezone-diff"></span></span>
+        <span class="clock-timezone" id="clock-timezone"><span id="clock-timezone-name">PST</span> <span id="clock-timezone-diff"></span></span>
     </div>
 </div>
 
 <script>
     const TIME_ZONE = 'America/Los_Angeles';
 
+    // built once instead of every tick
+    const timeFormat = new Intl.DateTimeFormat('en-US',
+    {
+        timeZone: TIME_ZONE,
+        hour: '2-digit', // fixed width so the card doesn't shift at 10:00
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+    const offsetFormat = new Intl.DateTimeFormat('en-US', { timeZone: TIME_ZONE, timeZoneName: 'shortOffset' });
+    const nameFormat = new Intl.DateTimeFormat('en-US', { timeZone: TIME_ZONE, timeZoneName: 'short' });
+
+    let tickTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function myOffsetMinutes(now: Date): number
+    {
+        const name = offsetFormat.formatToParts(now).find(part => part.type === 'timeZoneName')?.value;
+        const match = name?.match(/GMT([+-])(\d+)(?::(\d+))?/);
+
+        if (!match)
+            return -8 * 60;
+
+        const sign = match[1] === '-' ? -1 : 1;
+        return sign * (parseInt(match[2]) * 60 + parseInt(match[3] ?? '0'));
+    }
+
+    function formatDiff(minutes: number): string
+    {
+        const hours = Math.floor(minutes / 60);
+        const rest = minutes % 60;
+        return rest ? `${hours}h ${rest}m` : `${hours}h`;
+    }
+
     function updateClock() {
-        const now = new Date();
-        
-        const time = new Intl.DateTimeFormat('en-US', 
-        {
-            timeZone: TIME_ZONE,
-            hour: 'numeric',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        }).format(now);
-        
         const timeElement = document.getElementById('clock-time');
         const timeZoneElement = document.getElementById('clock-timezone-diff');
-        
-        if (timeElement) timeElement.textContent = time;
 
-        if (timeZoneElement) 
+        if (!timeElement)
+            return false;
+
+        const now = new Date();
+        timeElement.textContent = timeFormat.format(now);
+
+        const timeZoneNameElement = document.getElementById('clock-timezone-name');
+        const zoneName = nameFormat.formatToParts(now).find(part => part.type === 'timeZoneName')?.value;
+        if (timeZoneNameElement && zoneName)
+            timeZoneNameElement.textContent = zoneName;
+
+        if (timeZoneElement)
         {
-            const myOffset = new Date().toLocaleString('en-US', { timeZone: TIME_ZONE, timeZoneName: 'shortOffset' }).match(/GMT([+-]\d+)/)?.[1];
+            const diff = -now.getTimezoneOffset() - myOffsetMinutes(now);
+            const direction = diff > 0 ? 'behind you' : 'ahead of you';
 
-            const myIntOffset = myOffset ? parseInt(myOffset) : -8;
-            const diff = (-now.getTimezoneOffset() / 60) - myIntOffset;
-
-            if (diff != 0) 
-            {
-                const direction = diff > 0 ? 'behind you' : 'ahead of you';
-                timeZoneElement.textContent = "- " + Math.abs(diff) + "h " + direction;
-            }
+            timeZoneElement.textContent = diff !== 0 ? `- ${formatDiff(Math.abs(diff))} ${direction}` : "";
         }
+
+        return true;
     }
-    
-    updateClock();
-    setInterval(updateClock, 1000);
+
+    function scheduleTick()
+    {
+        tickTimer = setTimeout(() =>
+        {
+            if (updateClock())
+                scheduleTick();
+            else
+                tickTimer = null;
+        }, 1000 - (Date.now() % 1000) + 10);
+    }
+
+    // ClientRouter only runs this script once
+    document.addEventListener('astro:page-load', () =>
+    {
+        if (updateClock() && !tickTimer)
+            scheduleTick();
+    });
+
+    document.addEventListener('astro:after-swap', updateClock);
+    document.addEventListener('astro:before-swap', () =>
+    {
+        if (tickTimer)
+            clearTimeout(tickTimer);
+        tickTimer = null;
+    });
 </script>
 
 <style>
