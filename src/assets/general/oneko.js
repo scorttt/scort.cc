@@ -26,8 +26,8 @@ export function startOneko(nekoFile) {
   let idleAnimationFrame = 0;
 
   let isDragging = false;
-  let dragOffsetX = 0;
-  let dragOffsetY = 0;
+  // let dragOffsetX = 0;
+  // let dragOffsetY = 0;
 
   const nekoSpeed = 20;
   const spriteSets = {
@@ -111,6 +111,11 @@ export function startOneko(nekoFile) {
 
     document.addEventListener("mousemove", onMouseMove);
 
+    // cursor left the page
+    document.addEventListener("mouseout", (event) => {
+      if (!event.relatedTarget) stopFollowing();
+    });
+
     // View transitions swap out <body> put the cat back
     document.addEventListener("astro:after-swap", () => {
       if (!nekoEl.isConnected) document.body.appendChild(nekoEl);
@@ -120,6 +125,11 @@ export function startOneko(nekoFile) {
 
     // nekoEl.addEventListener("mousedown", onMouseDown);
     // document.addEventListener("mouseup", onMouseUp);
+  }
+
+  function stopFollowing() {
+    mousePosX = nekoPosX;
+    mousePosY = nekoPosY;
   }
 
   function onMouseMove(event) {
