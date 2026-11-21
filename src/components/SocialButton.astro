@@ -51,20 +51,22 @@ const ButtonType = copy ? "button" : "a";
     {
         document.querySelectorAll(".copy-button").forEach((button) => 
         {
-            button.addEventListener("click", () => 
+            const handle = button.querySelector(".social-handle");
+            const original = handle?.textContent ?? null;
+            let timer: ReturnType<typeof setTimeout>;
+
+            button.addEventListener("click", () =>
             {
                 const text = button.getAttribute("data-copy-text");
-                const handle = button.querySelector(".social-handle");
-                
                 if (!text || !handle) 
                     return;
 
                 navigator.clipboard.writeText(text).then(() => 
                 {
-                    const original = handle.textContent;
                     handle.textContent = "copied!";
                     button.classList.add("copied");
-                    setTimeout(() => 
+                    clearTimeout(timer);
+                    timer = setTimeout(() =>
                     {
                         handle.textContent = original;
                         button.classList.remove("copied");
